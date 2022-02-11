@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Melsha</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string-array name="stores">
+        <item>Dessie</item>
+        <item>Jemmo</item>
+        <item>Kore</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Preference Titles -->
+
+    <!-- Messages Preferences -->
+
+    <!-- Sync Preferences -->
+</resources>

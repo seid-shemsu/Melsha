@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/item"
+            android:icon="@drawable/items"
+            android:title="Items"/>
+        <item
+            android:id="@+id/store"
+            android:icon="@drawable/remove"
+            android:title="Sold"/>
+        <item
+            android:id="@+id/purchased"
+            android:icon="@drawable/add"
+            android:title="Purchased"/>
+        <item
+            android:id="@+id/sold"
+            android:icon="@drawable/search"
+            android:title="Search"/>
+        <item
+            android:id="@+id/daily_sells"
+            android:icon="@drawable/money"
+            android:title="Daily Sells"/>
+        <item
+            android:id="@+id/loan"
+            android:icon="@drawable/loan"
+            android:title="Loan"/>
+        <item
+            android:id="@+id/expense"
+            android:icon="@drawable/loan"
+            android:title="Expense"/>
+    </group>
+</menu>

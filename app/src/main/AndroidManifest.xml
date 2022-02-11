@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.izhar.melsha">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/logo"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/logo_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Melsha">
+        <activity android:name=".details.CreditedItems"></activity>
+        <activity android:name=".details.CustomerDetail" />
+        <activity android:name=".ui.loan.loans.PayLoan" />
+        <activity android:name=".ui.loan.credits.Credits" />
+        <activity android:name=".ui.loan.loans.Loans" />
+        <activity android:name=".ui.loan.customers.Customers" />
+        <activity android:name=".ui.loan.customers.GiveLoan" />
+        <activity
+            android:name=".ui.loan.customers.LoanPeoples"
+            android:theme="@style/Theme.Melsha.NoActionBar" />
+        <activity android:name=".ui.loan.customers.TakeLoan" />
+        <activity android:name=".details.SoldDetail" />
+        <activity android:name=".details.PurchasedDetail" />
+        <activity android:name=".details.ItemDetail" />
+        <activity
+            android:name=".activities.Login"
+            android:theme="@style/Theme.Melsha.NoActionBar" />
+        <activity android:name=".activities.Settings" />
+        <activity
+            android:name=".activities.Splash"
+            android:theme="@style/Theme.Melsha.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.Move" />
+        <activity android:name=".activities.Sell" />
+        <activity android:name=".activities.Purchase" />
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.Melsha.NoActionBar" />
+    </application>
+
+</manifest>

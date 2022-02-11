@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/item">
+
+    <fragment
+        android:id="@+id/store"
+        android:name="com.izhar.melsha.ui.store.StoreFragment"
+        android:label="Sold"
+        tools:layout="@layout/fragment_store"/>
+    <fragment
+        android:id="@+id/item"
+        android:name="com.izhar.melsha.ui.items.ItemFragment"
+        android:label="Item"
+        tools:layout="@layout/fragment_item"/>
+    <fragment
+        android:id="@+id/purchased"
+        android:name="com.izhar.melsha.ui.purchased.PurchasedFragment"
+        android:label="Purchased"
+        tools:layout="@layout/fragment_purchased"/>
+    <fragment
+        android:id="@+id/sold"
+        android:name="com.izhar.melsha.ui.sold.SoldFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_sold"/>
+    <fragment
+        android:id="@+id/daily_sells"
+        android:name="com.izhar.melsha.ui.dailySells.DailySells"
+        android:label="Daily Sells"
+        tools:layout="@layout/fragment_daily_sells"/>
+    <fragment
+        android:id="@+id/loan"
+        android:name="com.izhar.melsha.ui.loan.LoanMain"
+        android:label="Loan"
+        tools:layout="@layout/fragment_loan"/>
+    <fragment
+        android:id="@+id/expense"
+        android:name="com.izhar.melsha.ui.expense.Expense"
+        android:label="Expense"
+        tools:layout="@layout/fragment_expense"/>
+</navigation>
