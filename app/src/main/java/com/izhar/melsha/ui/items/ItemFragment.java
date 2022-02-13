@@ -1,5 +1,6 @@
 package com.izhar.melsha.ui.items;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.adapters.ItemsAdapter;
 import com.izhar.melsha.models.ItemModel;
 
@@ -38,9 +40,9 @@ public class ItemFragment extends Fragment {
     private FloatingActionButton fab;
     private RecyclerView recycler;
     private TextView no_store;
+    private ProgressBar progress;
     private List<ItemModel> items = new ArrayList<>();
     private ItemsAdapter adapter;
-    private ProgressBar progress;
 
     Utils utils = new Utils();
 
@@ -160,6 +162,7 @@ public class ItemFragment extends Fragment {
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", e.toString()));
                     }
 
                 }, error -> {

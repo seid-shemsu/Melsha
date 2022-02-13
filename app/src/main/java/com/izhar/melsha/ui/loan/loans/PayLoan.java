@@ -3,6 +3,7 @@ package com.izhar.melsha.ui.loan.loans;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.models.LoanModel;
 
 public class PayLoan extends AppCompatActivity {
@@ -135,12 +137,15 @@ public class PayLoan extends AppCompatActivity {
                         onBackPressed();
                     }
                     else {
+                        startActivity(new Intent((this), ErrorActivity.class).putExtra("error", response));
                         System.out.println(response);
                         Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
 
                 }, error -> {
+
+            startActivity(new Intent((this), ErrorActivity.class).putExtra("error", error.getMessage()));
             System.out.println(error.getMessage());
             onBackPressed();
         });

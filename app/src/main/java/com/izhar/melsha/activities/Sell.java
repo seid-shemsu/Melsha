@@ -1,5 +1,6 @@
 package com.izhar.melsha.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -140,6 +141,7 @@ public class Sell extends AppCompatActivity {
                         }
                         else {
                             Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(this, ErrorActivity.class).putExtra("error", response));
                             progress.setVisibility(View.GONE);
                             submit.setVisibility(View.VISIBLE);
                         }

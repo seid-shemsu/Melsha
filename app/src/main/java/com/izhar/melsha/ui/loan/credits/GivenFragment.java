@@ -1,5 +1,6 @@
 package com.izhar.melsha.ui.loan.credits;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,6 +27,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.adapters.LoanAdapter;
 import com.izhar.melsha.models.LoanModel;
 
@@ -118,18 +120,19 @@ public class GivenFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                recycler.removeAllViews();
+
                 if (search.getText().toString().isEmpty()){
                     adapter = new LoanAdapter(getContext(), loans, "loan");
                 }
                 else {
                     filteredLoans.clear();
                     for (LoanModel loan : loans){
-                        if (loan.getPerson_code().contains(search.getText().toString()) || loan.getCredit_no().contains(search.getText().toString()))
+                        if (loan.getPerson_code().toLowerCase().contains(search.getText().toString().toLowerCase()) || loan.getCredit_no().toLowerCase().contains(search.getText().toString().toLowerCase()))
                             filteredLoans.add(loan);
                     }
                     adapter = new LoanAdapter(getContext(), filteredLoans, "loan");
                 }
+                recycler.removeAllViews();
                 recycler.setAdapter(adapter);
             }
 
@@ -143,6 +146,7 @@ public class GivenFragment extends Fragment {
 
     Utils utils = new Utils();
     private void getGiven(){
+        recycler.setVisibility(View.GONE);
         progress.setVisibility(View.VISIBLE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
                 "?action=" + action,
@@ -166,6 +170,7 @@ public class GivenFragment extends Fragment {
                         }
                         adapter = new LoanAdapter(getContext(), loans, "credit");
                         recycler.setAdapter(adapter);
+                        recycler.setVisibility(View.VISIBLE);
                         progress.setVisibility(View.GONE);
                         if (loans.size() == 0)
                             no.setVisibility(View.VISIBLE);
@@ -177,6 +182,7 @@ public class GivenFragment extends Fragment {
 
                 }, error -> {
             error.printStackTrace();
+            startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", error.getMessage()));
             try {
                 progress.setVisibility(View.GONE);
                 Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_LONG)

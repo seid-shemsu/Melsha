@@ -1,6 +1,7 @@
 package com.izhar.melsha.ui.store;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.adapters.SoldAdapter;
 import com.izhar.melsha.models.SoldModel;
 
@@ -198,6 +200,7 @@ public class Jemmo extends Fragment {
                             no_store.setVisibility(View.VISIBLE);
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", e.toString()));
                     }
 
                 }, error -> {

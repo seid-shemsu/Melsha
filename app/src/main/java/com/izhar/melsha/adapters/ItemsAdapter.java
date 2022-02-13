@@ -73,25 +73,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.Holder>{
             kore = itemView.findViewById(R.id.kore);
             jemmo = itemView.findViewById(R.id.jemmo);
 
-
-            /*purchase = itemView.findViewById(R.id.purchase);
-            purchase.setOnClickListener(v -> {
-                context.startActivity(new Intent(context, Purchase.class)
-                        .putExtra("item", items.get(getAdapterPosition())));
-            });
-
-            move = itemView.findViewById(R.id.move);
-            move.setOnClickListener(v -> {
-                context.startActivity(new Intent(context, Move.class)
-                        .putExtra("item", items.get(getAdapterPosition())));
-            });
-
-            sell = itemView.findViewById(R.id.sell);
-            sell.setOnClickListener(v -> {
-                context.startActivity(new Intent(context, Sell.class)
-                        .putExtra("item", items.get(getAdapterPosition())));
-            });*/
-
             linear = itemView.findViewById(R.id.linear);
             linear.setOnClickListener(v -> {
                 context.startActivity(new Intent(context, ItemDetail.class)

@@ -1,9 +1,16 @@
 package com.izhar.melsha.details;
 
+import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.adapters.CreditedItemAdapter;
 import com.izhar.melsha.models.CreditedItemModel;
 
@@ -35,6 +43,7 @@ public class CreditedItems extends AppCompatActivity {
     List<CreditedItemModel> items = new ArrayList<>();
     CreditedItemAdapter adapter;
     String cn, from, action;
+    Button delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +69,14 @@ public class CreditedItems extends AppCompatActivity {
         recycler = findViewById(R.id.recycler);
         recycler.setHasFixedSize(true);
         recycler.setLayoutManager(new LinearLayoutManager(this));
-
+        delete = findViewById(R.id.delete);
+        delete.setOnClickListener(v -> {
+            if (from.equalsIgnoreCase("loan")) {
+                delete("deleteCreditA&cna=" + cn);
+            } else {
+                delete("deleteCreditB&cnb=" + cn);
+            }
+        });
         getItems();
     }
 
@@ -103,6 +119,37 @@ public class CreditedItems extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    private void delete(String action) {
+        Dialog dialog = new Dialog(this);
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.loading);
+        dialog.show();
+        System.out.println(utils.getUrl(this) + action);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(this) +
+                "?action=" + action,
+                response -> {
+                    if (response.startsWith("<")){
+                        dialog.dismiss();
+                        Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                        System.out.println(response);
+                        startActivity(new Intent(this, ErrorActivity.class).putExtra("error", response));
+                    }
+                    else {
+                        dialog.dismiss();
+                        Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+                    }
+                }, error -> {
+            error.printStackTrace();
+            dialog.dismiss();
+            startActivity(new Intent(this, ErrorActivity.class).putExtra("error", error.toString()));
+
         });
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);

@@ -1,5 +1,6 @@
 package com.izhar.melsha.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -71,11 +72,16 @@ public class Move extends AppCompatActivity {
                 "&sell_quantity=" + Integer.parseInt(quantity.getText().toString())+
                 "&branch_quantity=" + getBranchQuantity(),
                 response -> {
-                    Toast.makeText(this, "Successfully transferred", Toast.LENGTH_SHORT).show();
+                    if (!response.startsWith("<")){
+                        Toast.makeText(this, "Successfully transferred", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        startActivity(new Intent(this, ErrorActivity.class).putExtra("error", response));
+                    }
                     onBackPressed();
                 }, error -> {
             System.out.println(error.getMessage());
-            onBackPressed();
+            startActivity(new Intent(this, ErrorActivity.class).putExtra("error", error.getMessage()));
         });
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(
                 0,

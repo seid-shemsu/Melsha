@@ -3,8 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/item">
-
+    app:startDestination="@+id/home">
+    <fragment
+        android:id="@+id/home"
+        android:name="com.izhar.melsha.ui.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home"/>
     <fragment
         android:id="@+id/store"
         android:name="com.izhar.melsha.ui.store.StoreFragment"
@@ -40,4 +44,9 @@
         android:name="com.izhar.melsha.ui.expense.Expense"
         android:label="Expense"
         tools:layout="@layout/fragment_expense"/>
+    <fragment
+        android:id="@+id/bank"
+        android:name="com.izhar.melsha.ui.bank.BankFragment"
+        android:label="Bank"
+        tools:layout="@layout/fragment_bank"/>
 </navigation>

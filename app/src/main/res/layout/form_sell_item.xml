@@ -216,12 +216,13 @@
 
             <Button
                 android:id="@+id/submit"
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:layout_centerHorizontal="true"
                 app:cornerRadius="100dp"
                 android:backgroundTint="@color/purple_700"
-                android:text="Buy" />
+                android:text="Sell"/>
 
             <ProgressBar
                 android:id="@+id/progress"

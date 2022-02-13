@@ -1,6 +1,7 @@
 package com.izhar.melsha.ui.loan.customers;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.activities.LoanGiverAdapter;
 import com.izhar.melsha.activities.LoanTakerAdapter;
 import com.izhar.melsha.adapters.LoanAdapter;
@@ -174,7 +176,14 @@ public class TakersFragment extends Fragment {
                 } else {
                     filteredTakers.clear();
                     for (LoanTakerModel taker : takers) {
-                        if (taker.getLeft() >= Integer.parseInt(search.getText().toString())){
+                        try {
+                            if (taker.getLeft() >= Integer.parseInt(search.getText().toString())){
+                                filteredTakers.add(taker);
+                            }
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        if (taker.getName().toLowerCase().contains(search.getText().toString().toLowerCase())){
                             filteredTakers.add(taker);
                         }
                     }
@@ -266,6 +275,7 @@ public class TakersFragment extends Fragment {
                 }, error -> {
             error.printStackTrace();
             try {
+                startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", error.getMessage()));
                 progress.setVisibility(View.GONE);
                 Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_LONG)
                         .setAction("Retry", v -> getTakers())

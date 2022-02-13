@@ -20,7 +20,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:hint="search"
-            android:textColorHint="@color/black"
             app:endIconDrawable="@drawable/search"
             app:endIconMode="custom"
             app:endIconTint="@color/black"

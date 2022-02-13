@@ -1,5 +1,6 @@
 package com.izhar.melsha.ui.purchased;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -19,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.adapters.PurchasedAdapter;
 import com.izhar.melsha.models.PurchasedModel;
 
@@ -97,6 +99,7 @@ public class KorePurchased extends Fragment {
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", e.toString()));
                     }
 
                 }, error -> {

@@ -2,6 +2,7 @@ package com.izhar.melsha.ui.dailySells;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputLayout;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 
 public class DailySells extends Fragment {
     View root;
@@ -37,7 +39,7 @@ public class DailySells extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.fragment_daily_sells, container, false);
-        user_branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "");
+        user_branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "guest");
         amount = root.findViewById(R.id.amount);
         amount_input = root.findViewById(R.id.amount_input);
         save = root.findViewById(R.id.save);
@@ -79,6 +81,7 @@ public class DailySells extends Fragment {
                 requestQueue.add(stringRequest);
             }
         });
+        getData();
         return root;
     }
 
@@ -87,7 +90,14 @@ public class DailySells extends Fragment {
                 "?action=getDailySells" +
                 "&branch=" + user_branch,
                 response -> {
-                    amount.setText(response);
+                    if (response.startsWith("<")){
+                        startActivity(new Intent((getContext()), ErrorActivity.class).putExtra("error", response));
+                        Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
+                        System.out.println(response);
+                    }
+                    else {
+                        amount.setText(response + "");
+                    }
                 }, error -> {
             error.printStackTrace();
             Toast.makeText(getContext(), "Unable to load data", Toast.LENGTH_SHORT).show();

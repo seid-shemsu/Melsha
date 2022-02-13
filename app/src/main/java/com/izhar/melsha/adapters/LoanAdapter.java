@@ -45,13 +45,18 @@ public class LoanAdapter extends RecyclerView.Adapter<LoanAdapter.Holder> {
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         LoanModel loan = loans.get(position);
         holder.credit_no.setText(loan.getCredit_no());
-        holder.date.setText(loan.getDate());
         holder.person_name.setText(loan.getPerson_name());
         holder.person_code.setText(loan.getPerson_code());
         holder.quantity.setText(loan.getQuantity());
         holder.amount.setText(loan.getAmount());
         holder.payed.setText(loan.getPayed());
         holder.left.setText(loan.getLeft());
+
+        try {
+            holder.date.setText(loan.getDate());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

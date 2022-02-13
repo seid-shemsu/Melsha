@@ -3,13 +3,8 @@ package com.izhar.melsha.models;
 import java.io.Serializable;
 
 public class ExpenseModel implements Serializable {
-    String reason;
+    String number, reason, branch, date;
     int amount;
-
-    public ExpenseModel(String reason, int amount) {
-        this.reason = reason;
-        this.amount = amount;
-    }
 
     public ExpenseModel() {
     }
@@ -28,5 +23,29 @@ public class ExpenseModel implements Serializable {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

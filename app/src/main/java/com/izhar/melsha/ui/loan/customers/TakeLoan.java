@@ -1,6 +1,7 @@
 package com.izhar.melsha.ui.loan.customers;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -23,9 +24,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputLayout;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.models.ItemModel;
 import com.izhar.melsha.models.LoanGiverModel;
 import com.izhar.melsha.models.PurchasedModel;
@@ -50,6 +51,7 @@ public class TakeLoan extends AppCompatActivity {
     Map<String, ItemModel> items = new HashMap<>();
     Map<String, PurchasedModel> purchasedModelMap = new HashMap<>();
     AutoCompleteTextView store;
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -187,7 +189,7 @@ public class TakeLoan extends AppCompatActivity {
             return false;
         }
 
-        if (store.getText().toString().isEmpty()){
+        if (store.getText().toString().isEmpty()) {
             Toast.makeText(this, "specify store", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -196,7 +198,7 @@ public class TakeLoan extends AppCompatActivity {
             return false;
         }
 
-        if (items.size() == 0){
+        if (items.size() == 0) {
             Toast.makeText(this, "add some item", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -234,7 +236,7 @@ public class TakeLoan extends AppCompatActivity {
         return true;
     }
 
-    private boolean isValid3(){
+    private boolean isValid3() {
         int tot_amount = 0, tot_quantity = 0, tot_amount1 = 0, tot_quantity1 = 0;
         for (int i = 0; i < linear.getChildCount(); i++) {
             View view = linear.getChildAt(i);
@@ -244,11 +246,11 @@ public class TakeLoan extends AppCompatActivity {
             tot_amount += Integer.parseInt(amount.getText().toString()) * Integer.parseInt(quantity.getText().toString());
             tot_quantity += Integer.parseInt(quantity.getText().toString());
         }
-        if (tot_quantity != Integer.parseInt(quantity.getText().toString())){
+        if (tot_quantity != Integer.parseInt(quantity.getText().toString())) {
             Toast.makeText(this, "biased quantity", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (tot_amount != Integer.parseInt(amount.getText().toString())){
+        if (tot_amount != Integer.parseInt(amount.getText().toString())) {
             Toast.makeText(this, "biased amount", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -379,11 +381,14 @@ public class TakeLoan extends AppCompatActivity {
                         onBackPressed();
                     } else {
                         System.out.println(response);
+                        startActivity(new Intent(this, ErrorActivity.class).putExtra("error", response));
                         Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
 
                 }, error -> {
+
+            startActivity(new Intent((this), ErrorActivity.class).putExtra("error", error.getMessage()));
             System.out.println(error.getMessage());
             onBackPressed();
         });

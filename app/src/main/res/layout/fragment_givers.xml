@@ -18,8 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:hint="left amount"
-            android:textColorHint="@color/black"
+            android:hint="search by name or left amount"
             app:endIconDrawable="@drawable/search"
             app:endIconMode="custom"
             app:endIconTint="@color/black"
@@ -28,7 +27,6 @@
             <EditText
                 android:id="@+id/search"
                 android:textColor="@color/black"
-                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>

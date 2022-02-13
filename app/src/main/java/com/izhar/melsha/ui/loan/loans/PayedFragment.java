@@ -1,5 +1,6 @@
 package com.izhar.melsha.ui.loan.loans;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,6 +28,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.adapters.PayedAdapter;
 import com.izhar.melsha.models.PayedModel;
 
@@ -111,20 +113,6 @@ public class PayedFragment extends Fragment {
         recycler.setHasFixedSize(true);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         getPayed();
-        search_by.setEndIconOnClickListener(v -> {
-            if (search.getText().toString().isEmpty())
-                adapter = new PayedAdapter(getContext(), payeds);
-            else {
-                filteredPaid.clear();
-                for (PayedModel paid : payeds) {
-                    if (paid.getTCN().equalsIgnoreCase(search.getText().toString()) || paid.getPcode().equalsIgnoreCase(search.getText().toString()))
-                        filteredPaid.add(paid);
-                }
-                adapter = new PayedAdapter(getContext(), filteredPaid);
-            }
-            recycler.removeAllViews();
-            recycler.setAdapter(adapter);
-        });
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -134,14 +122,14 @@ public class PayedFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (search.getText().toString().isEmpty())
-                    adapter = new PayedAdapter(getContext(), payeds);
+                    adapter = new PayedAdapter(getContext(), payeds, "loan");
                 else {
                     filteredPaid.clear();
                     for (PayedModel paid : payeds) {
-                        if (paid.getTCN().contains(search.getText().toString()) || paid.getPcode().contains(search.getText().toString()))
+                        if (paid.getTCN().toLowerCase().contains(search.getText().toString().toLowerCase()) || paid.getPname().toLowerCase().contains(search.getText().toString().toLowerCase()) || paid.getCRN().toLowerCase().contains(search.getText().toString().toLowerCase()))
                             filteredPaid.add(paid);
                     }
-                    adapter = new PayedAdapter(getContext(), filteredPaid);
+                    adapter = new PayedAdapter(getContext(), filteredPaid, "loan");
                 }
                 recycler.removeAllViews();
                 recycler.setAdapter(adapter);
@@ -156,6 +144,7 @@ public class PayedFragment extends Fragment {
     }
 
     private void getPayed() {
+        recycler.setVisibility(View.GONE);
         progress.setVisibility(View.VISIBLE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
                 "?action=getAllPay ",
@@ -174,9 +163,10 @@ public class PayedFragment extends Fragment {
                             payed.setDate(object.getString("date"));
                             payeds.add(payed);
                         }
-                        adapter = new PayedAdapter(getContext(), payeds);
+                        adapter = new PayedAdapter(getContext(), payeds, "loan");
                         recycler.setAdapter(adapter);
                         progress.setVisibility(View.GONE);
+                        recycler.setVisibility(View.VISIBLE);
                         if (payeds.size() == 0)
                             no.setVisibility(View.VISIBLE);
                         else
@@ -188,6 +178,7 @@ public class PayedFragment extends Fragment {
                 }, error -> {
             error.printStackTrace();
             try {
+                startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", error.getMessage()));
                 progress.setVisibility(View.GONE);
                 Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_LONG)
                         .setAction("Retry", v -> getPayed())

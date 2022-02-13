@@ -1,6 +1,7 @@
 package com.izhar.melsha.ui.loan.customers;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.activities.LoanGiverAdapter;
 import com.izhar.melsha.models.LoanGiverModel;
 
@@ -137,6 +139,7 @@ public class GiversFragment extends Fragment {
                                     dialog.dismiss();
                                 } else {
                                     Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", response));
                                     dialog.setContentView(R.layout.form_loan_new);
                                     dialog.setCancelable(true);
                                 }
@@ -168,9 +171,15 @@ public class GiversFragment extends Fragment {
                 } else {
                     filteredGivers.clear();
                     for (LoanGiverModel giver : givers) {
-                        if (giver.getLeft() >= Integer.parseInt(search.getText().toString())) {
-                            filteredGivers.add(giver);
+                        try {
+                            if (giver.getLeft() >= Integer.parseInt(search.getText().toString())) {
+                                filteredGivers.add(giver);
+                            }
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
                         }
+                        if (giver.getName().toLowerCase().contains(search.getText().toString().toLowerCase()))
+                            filteredGivers.add(giver);
                     }
                     adapter = new LoanGiverAdapter(getContext(), filteredGivers);
                 }

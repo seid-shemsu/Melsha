@@ -1,5 +1,6 @@
 package com.izhar.melsha.ui.loan.credits;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,6 +27,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.adapters.LoanAdapter;
 import com.izhar.melsha.adapters.PayedAdapter;
 import com.izhar.melsha.models.LoanModel;
@@ -97,8 +99,7 @@ public class ReturnedFragment extends Fragment {
     EditText search;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
         root = inflater.inflate(R.layout.fragment_payed, container, false);
@@ -119,16 +120,17 @@ public class ReturnedFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (search.getText().toString().isEmpty())
-                    adapter = new PayedAdapter(getContext(), payeds);
+                    adapter = new PayedAdapter(getContext(), payeds, "credit");
                 else {
                     filteredPaid.clear();
                     for (PayedModel paid : payeds) {
-                        if (paid.getTCN().contains(search.getText().toString()) || paid.getPcode().contains(search.getText().toString()))
+                        if (paid.getTCN().toLowerCase().contains(search.getText().toString().toLowerCase()) || paid.getPcode().toLowerCase().contains(search.getText().toString().toLowerCase()) || paid.getCRN().toLowerCase().contains(search.getText().toString().toLowerCase()))
                             filteredPaid.add(paid);
                     }
-                    adapter = new PayedAdapter(getContext(), filteredPaid);
+                    adapter = new PayedAdapter(getContext(), filteredPaid, "credit");
                 }
                 recycler.removeAllViews();
+                recycler.setAdapter(adapter);
             }
 
             @Override
@@ -141,6 +143,7 @@ public class ReturnedFragment extends Fragment {
 
 
     private void getPayed() {
+        recycler.setVisibility(View.GONE);
         progress.setVisibility(View.VISIBLE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
                 "?action=getAllReturningB ",
@@ -160,8 +163,9 @@ public class ReturnedFragment extends Fragment {
                             payed.setDate(object.getString("date"));
                             payeds.add(payed);
                         }
-                        adapter = new PayedAdapter(getContext(), payeds);
+                        adapter = new PayedAdapter(getContext(), payeds, "credit");
                         recycler.setAdapter(adapter);
+                        recycler.setVisibility(View.VISIBLE);
                         progress.setVisibility(View.GONE);
                         if (payeds.size() == 0)
                             no.setVisibility(View.VISIBLE);
@@ -172,6 +176,7 @@ public class ReturnedFragment extends Fragment {
                     }
 
                 }, error -> {
+            startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", error.getMessage()));
             error.printStackTrace();
             try {
                 progress.setVisibility(View.GONE);

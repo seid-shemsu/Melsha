@@ -129,13 +129,14 @@ public class Purchase extends AppCompatActivity {
                 "&branch_quantity=" + getBranchQuantity(),
                 response -> {
 
-                    if (response.equalsIgnoreCase("success")){
+                    if (response.contains("success")){
                         Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         finish();
                     }
                     else {
                         Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(this, ErrorActivity.class).putExtra("error", response));
                         progress.setVisibility(View.GONE);
                         submit.setVisibility(View.VISIBLE);
                     }

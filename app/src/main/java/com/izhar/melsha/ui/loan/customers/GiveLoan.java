@@ -1,6 +1,7 @@
 package com.izhar.melsha.ui.loan.customers;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -23,12 +24,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputLayout;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.models.ItemModel;
 import com.izhar.melsha.models.LoanTakerModel;
-import com.izhar.melsha.models.PurchasedModel;
 import com.izhar.melsha.models.SoldModel;
 
 import org.json.JSONArray;
@@ -51,11 +51,13 @@ public class GiveLoan extends AppCompatActivity {
     ArrayAdapter<CharSequence> stores;
     AutoCompleteTextView store;
     Dialog dialog;
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +95,6 @@ public class GiveLoan extends AppCompatActivity {
             check.setOnClickListener(v1 -> {
                 code.setEnabled(false);
                 addItems(code.getText().toString(), check, code);
-                check.setVisibility(View.GONE);
             });
             linear.addView(item);
             cancel.setOnClickListener(v2 -> {
@@ -235,6 +236,7 @@ public class GiveLoan extends AppCompatActivity {
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        code.setEnabled(true);
                         items.put(co, null);
                     }
                 }, error -> {
@@ -247,28 +249,28 @@ public class GiveLoan extends AppCompatActivity {
 
 
     private boolean isValid() {
-        if (person_name.getText().toString().isEmpty()){
+        if (person_name.getText().toString().isEmpty()) {
             Toast.makeText(this, "specify persons' name", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (person_code.getText().toString().isEmpty()){
+        if (person_code.getText().toString().isEmpty()) {
             Toast.makeText(this, "specify persons' code", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (amount.getText().toString().isEmpty()){
+        if (amount.getText().toString().isEmpty()) {
             Toast.makeText(this, "specify credit amount", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (store.getText().toString().isEmpty()){
+        if (store.getText().toString().isEmpty()) {
             Toast.makeText(this, "specify store", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (linear.getChildCount() == 0){
+        if (linear.getChildCount() == 0) {
             Toast.makeText(this, "add some item", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (items.size() == 0){
+        if (items.size() == 0) {
             Toast.makeText(this, "add some item", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -289,7 +291,7 @@ public class GiveLoan extends AppCompatActivity {
         }
         return true;
     }
-    
+
     private boolean isValid2() {
         Set<String> keys = items.keySet();
         for (String key : keys) {
@@ -305,7 +307,7 @@ public class GiveLoan extends AppCompatActivity {
         return true;
     }
 
-    private boolean isValid3(){
+    private boolean isValid3() {
         int tot_amount = 0, tot_quantity = 0;
         for (int i = 0; i < linear.getChildCount(); i++) {
             View view = linear.getChildAt(i);
@@ -315,11 +317,11 @@ public class GiveLoan extends AppCompatActivity {
             tot_amount += Integer.parseInt(amount.getText().toString()) * Integer.parseInt(quantity.getText().toString());
             tot_quantity += Integer.parseInt(quantity.getText().toString());
         }
-        if (tot_quantity != Integer.parseInt(quantity.getText().toString())){
+        if (tot_quantity != Integer.parseInt(quantity.getText().toString())) {
             Toast.makeText(this, "biased quantity", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (tot_amount != Integer.parseInt(amount.getText().toString())){
+        if (tot_amount != Integer.parseInt(amount.getText().toString())) {
             Toast.makeText(this, "biased amount", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -343,8 +345,9 @@ public class GiveLoan extends AppCompatActivity {
 
 
     Utils utils = new Utils();
-    private void giveLoan(String code, String name, String phone, String amount, String quantity, String items, String jSold){
-        String link = utils.getUrl(this) + "?action=takingLoanA" +
+
+    private void giveLoan(String code, String name, String phone, String amount, String quantity, String items, String jSold) {
+        String link = utils.getUrl(this) + "?action=givingLoan" +
                 "&pcode=" + code +
                 "&pname=" + name +
                 "&pphone=" + phone +
@@ -355,21 +358,21 @@ public class GiveLoan extends AppCompatActivity {
         System.out.println(link);
         dialog.show();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(this) +
-                "?action=givingLoan"+
-                "&pcode=" + code+
-                "&pname=" + name+
-                "&pphone=" + phone+
-                "&cb_amount=" + amount+
-                "&cb_quantity=" + quantity+
-                "&JSB=" + items+
+                "?action=givingLoan" +
+                "&pcode=" + code +
+                "&pname=" + name +
+                "&pphone=" + phone +
+                "&cb_amount=" + amount +
+                "&cb_quantity=" + quantity +
+                "&JSB=" + items +
                 "&jSold=" + jSold,
                 response -> {
-                    if (response.contains("Successfully")){
+                    if (response.contains("Successfully")) {
                         Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         onBackPressed();
-                    }
-                    else {
+                    } else {
+                        startActivity(new Intent((this), ErrorActivity.class).putExtra("error", response));
                         Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
                         System.out.println(response);
                         dialog.dismiss();

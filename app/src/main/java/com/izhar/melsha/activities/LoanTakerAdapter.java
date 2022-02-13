@@ -75,12 +75,14 @@ public class LoanTakerAdapter extends RecyclerView.Adapter<LoanTakerAdapter.Hold
             payed = itemView.findViewById(R.id.payed);
             left = itemView.findViewById(R.id.left);
             linaer = itemView.findViewById(R.id.linear1);
+
             total.setOnClickListener(this);
             payed.setOnClickListener(this);
             left.setOnClickListener(this);
             name.setOnClickListener(this);
             code.setOnClickListener(this);
             linaer.setOnClickListener(this);
+            letter.setOnClickListener(this);
         }
 
         @Override
