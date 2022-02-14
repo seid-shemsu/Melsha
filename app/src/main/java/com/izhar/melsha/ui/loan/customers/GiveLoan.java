@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -72,8 +73,8 @@ public class GiveLoan extends AppCompatActivity {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.loading);
 
-        stores = ArrayAdapter.createFromResource(this, R.array.stores, R.layout.list_item);
         taker = (LoanTakerModel) getIntent().getExtras().getSerializable("taker");
+        stores = ArrayAdapter.createFromResource(this, R.array.stores, R.layout.list_item);
         store = findViewById(R.id.store);
         store.setAdapter(stores);
         person_code = findViewById(R.id.person_code);
@@ -89,19 +90,21 @@ public class GiveLoan extends AppCompatActivity {
         submit = findViewById(R.id.submit);
         fab.setOnClickListener(v -> {
             View item = getLayoutInflater().inflate(R.layout.single_take_loan, null, false);
-            ImageView cancel = item.findViewById(R.id.cancel);
+            ProgressBar progress = item.findViewById(R.id.progress);
             EditText code = item.findViewById(R.id.code);
             ImageView check = item.findViewById(R.id.check);
             check.setOnClickListener(v1 -> {
-                code.setEnabled(false);
-                addItems(code.getText().toString(), check, code);
+                if (check.getDrawable().getConstantState() == getResources().getDrawable( R.drawable.check).getConstantState()){
+                    items.remove(code.getText().toString());
+                    soldModelMap.remove(code.getText().toString());
+                    linear.removeView(item);
+                }
+                else {
+                    code.setEnabled(false);
+                    addItems(code.getText().toString(), check, code, progress);
+                }
             });
             linear.addView(item);
-            cancel.setOnClickListener(v2 -> {
-                items.remove(code.getText().toString());
-                soldModelMap.remove(code.getText().toString());
-                linear.removeView(item);
-            });
         });
 
         submit.setOnClickListener(v -> {
@@ -176,7 +179,9 @@ public class GiveLoan extends AppCompatActivity {
         }
     }
 
-    private void addItems(String co, ImageView icon, EditText code) {
+    private void addItems(String co, ImageView icon, EditText code, ProgressBar progress) {
+        progress.setVisibility(View.VISIBLE);
+        icon.setVisibility(View.GONE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(this) +
                 "?action=getSingleItem" +
                 "&code=" + co,
@@ -233,7 +238,8 @@ public class GiveLoan extends AppCompatActivity {
                             items.put(co, null);
                             code.setEnabled(true);
                         }
-
+                        progress.setVisibility(View.GONE);
+                        icon.setVisibility(View.VISIBLE);
                     } catch (JSONException e) {
                         e.printStackTrace();
                         code.setEnabled(true);

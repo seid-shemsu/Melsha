@@ -1,4 +1,4 @@
-package com.izhar.melsha.activities;
+package com.izhar.melsha.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -20,7 +20,6 @@ import com.izhar.melsha.R;
 import com.izhar.melsha.details.CustomerDetail;
 import com.izhar.melsha.models.LoanTakerModel;
 import com.izhar.melsha.ui.loan.customers.GiveLoan;
-import com.izhar.melsha.ui.loan.customers.TakeLoan;
 
 import java.util.List;
 

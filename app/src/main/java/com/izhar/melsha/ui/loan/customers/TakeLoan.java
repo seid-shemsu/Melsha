@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -87,20 +88,27 @@ public class TakeLoan extends AppCompatActivity {
         submit = findViewById(R.id.submit);
         fab.setOnClickListener(v -> {
             View item = getLayoutInflater().inflate(R.layout.single_take_loan, null, false);
-            ImageView cancel = item.findViewById(R.id.cancel);
+            ProgressBar progress = item.findViewById(R.id.progress);
             EditText code = item.findViewById(R.id.code);
             ImageView check = item.findViewById(R.id.check);
-
             linear.addView(item);
+
             check.setOnClickListener(v1 -> {
-                code.setEnabled(false);
-                addItems(code.getText().toString(), check, code);
+                if (check.getDrawable().getConstantState() == getResources().getDrawable( R.drawable.check).getConstantState()){
+                    items.remove(code.getText().toString());
+                    purchasedModelMap.remove(code.getText().toString());
+                    linear.removeView(item);
+                }
+                else {
+                    code.setEnabled(false);
+                    addItems(code.getText().toString(), check, code, progress);
+                }
             });
-            cancel.setOnClickListener(v2 -> {
+            /*cancel.setOnClickListener(v2 -> {
                 items.remove(code.getText().toString());
                 purchasedModelMap.remove(code.getText().toString());
                 linear.removeView(item);
-            });
+            });*/
         });
 
         submit.setOnClickListener(v -> {
@@ -257,7 +265,9 @@ public class TakeLoan extends AppCompatActivity {
         return true;
     }
 
-    private void addItems(String co, ImageView icon, EditText code) {
+    private void addItems(String co, ImageView icon, EditText code, ProgressBar progress) {
+        progress.setVisibility(View.VISIBLE);
+        icon.setVisibility(View.GONE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(this) +
                 "?action=getSingleItem" +
                 "&code=" + co,
@@ -316,7 +326,8 @@ public class TakeLoan extends AppCompatActivity {
                             code.setEnabled(true);
                             icon.setImageDrawable(getResources().getDrawable(R.drawable.help));
                         }
-
+                        progress.setVisibility(View.GONE);
+                        icon.setVisibility(View.VISIBLE);
                     } catch (JSONException e) {
                         e.printStackTrace();
                         code.setEnabled(true);

@@ -57,6 +57,16 @@
                 app:cornerRadius="100dp" />
         </LinearLayout>
 
+        <Button
+            android:id="@+id/detail"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:text="Detail"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"
+            app:cornerRadius="100dp" />
+
         <LinearLayout
             android:id="@+id/linear2"
             android:layout_width="match_parent"

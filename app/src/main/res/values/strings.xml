@@ -7,6 +7,10 @@
         <item>Jemmo</item>
         <item>Kore</item>
     </string-array>
+    <string-array name="type">
+        <item>Deposit</item>
+        <item>Withdraw</item>
+    </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

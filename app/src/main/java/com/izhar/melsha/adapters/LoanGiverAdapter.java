@@ -1,4 +1,4 @@
-package com.izhar.melsha.activities;
+package com.izhar.melsha.adapters;
 
 import android.app.Dialog;
 import android.content.Context;

@@ -25,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
 import com.izhar.melsha.activities.ErrorActivity;
+import com.izhar.melsha.activities.TransactionsActivity;
 import com.izhar.melsha.models.BankModel;
 
 import java.util.List;
@@ -91,11 +92,15 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.Holder> {
             Button cancel = dialog.findViewById(R.id.cancel);
             EditText amount = dialog.findViewById(R.id.amount);
             TextView title = dialog.findViewById(R.id.title);
-
+            Button detail = dialog.findViewById(R.id.detail);
+            detail.setOnClickListener(v1 -> {
+                context.startActivity(new Intent(context, TransactionsActivity.class).putExtra("bank", banks.get(getAdapterPosition())));
+            });
 
             cancel.setOnClickListener(v1 -> {
                 linear2.setVisibility(View.GONE);
                 title.setVisibility(View.GONE);
+                detail.setVisibility(View.VISIBLE);
                 linear1.setVisibility(View.VISIBLE);
             });
 
@@ -103,6 +108,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.Holder> {
                 linear1.setVisibility(View.GONE);
                 linear2.setVisibility(View.VISIBLE);
                 title.setVisibility(View.VISIBLE);
+                detail.setVisibility(View.GONE);
                 action = "Withdraw";
                 submit.setText(action);
                 title.setText(action);
@@ -110,6 +116,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.Holder> {
             deposit.setOnClickListener(v1 -> {
                 linear1.setVisibility(View.GONE);
                 linear2.setVisibility(View.VISIBLE);
+                detail.setVisibility(View.GONE);
                 title.setVisibility(View.VISIBLE);
                 action = "Deposit";
                 submit.setText(action);
@@ -129,6 +136,8 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.Holder> {
                     }
                 }
             });
+
+
         }
 
         Utils utils = new Utils();

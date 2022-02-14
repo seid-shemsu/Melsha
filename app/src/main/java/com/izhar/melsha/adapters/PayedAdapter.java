@@ -94,14 +94,14 @@ public class PayedAdapter extends RecyclerView.Adapter<PayedAdapter.Holder> {
             dialog.show();
             Button detail = dialog.findViewById(R.id.detail);
             Button action = dialog.findViewById(R.id.action);
-            action.setText("Delete");
-            detail.setVisibility(View.GONE);
-            action.setOnClickListener(v1 -> {
+            detail.setText("Delete");
+            action.setVisibility(View.GONE);
+            detail.setOnClickListener(v1 -> {
                 if (from.equalsIgnoreCase("loan")){
-                    delete("deleteLoanBycrn&crn=" + payeds.get(getAdapterPosition()).getCRN());
+                    delete("deleteLoanBYcrn&crn=" + payeds.get(getAdapterPosition()).getCRN());
                 }
                 else {
-                    delete("deleteCreditBycrn&crn=" + payeds.get(getAdapterPosition()).getCRN());
+                    delete("deleteCreditBYcrn&crn=" + payeds.get(getAdapterPosition()).getCRN());
                 }
             });
         }
@@ -114,7 +114,7 @@ public class PayedAdapter extends RecyclerView.Adapter<PayedAdapter.Holder> {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.loading);
         dialog.show();
-        System.out.println(utils.getUrl(context) + action);
+        System.out.println(utils.getUrl(context) + "?action=" + action);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(context) +
                 "?action=" + action,
                 response -> {

@@ -169,30 +169,35 @@ public class BankFragment extends Fragment {
                 "?action=getBankList",
                 response -> {
                     try {
-                        banks.clear();
-                        JSONArray array = new JSONArray(response);
-                        for (int i = 0; i < array.length(); i++) {
-                            JSONObject object = array.getJSONObject(i);
-                            BankModel bank = new BankModel();
-                            bank.setCode(object.getString("code"));
-                            bank.setName(object.getString("name"));
-                            bank.setAccount(object.getString("acc"));
-                            if (object.get("balance").toString().equalsIgnoreCase("") || object.get("balance").toString().startsWith("#")) {
-                                bank.setBalance(0);
-                            } else {
-                                bank.setBalance((object.getInt("balance")));
+                        if (!response.startsWith("<")) {
+                            banks.clear();
+                            JSONArray array = new JSONArray(response);
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject object = array.getJSONObject(i);
+                                BankModel bank = new BankModel();
+                                bank.setCode(object.getString("code"));
+                                bank.setName(object.getString("name"));
+                                bank.setAccount(object.getString("acc"));
+                                if (object.get("balance").toString().equalsIgnoreCase("") || object.get("balance").toString().startsWith("#")) {
+                                    bank.setBalance(0);
+                                } else {
+                                    bank.setBalance((object.getInt("balance")));
+                                }
+                                banks.add(bank);
                             }
-                            banks.add(bank);
+                            adapter = new BankAdapter(getContext(), banks);
+                            recycler.setAdapter(adapter);
+                            recycler.setVisibility(View.VISIBLE);
+                            progress.setVisibility(View.GONE);
+                            refresh.setRefreshing(false);
+                            if (banks.size() == 0)
+                                no_store.setVisibility(View.VISIBLE);
+                            else
+                                no_store.setVisibility(View.GONE);
                         }
-                        adapter = new BankAdapter(getContext(), banks);
-                        recycler.setAdapter(adapter);
-                        recycler.setVisibility(View.VISIBLE);
-                        progress.setVisibility(View.GONE);
-                        refresh.setRefreshing(false);
-                        if (banks.size() == 0)
-                            no_store.setVisibility(View.VISIBLE);
-                        else
-                            no_store.setVisibility(View.GONE);
+                        else {
+                            startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", response));
+                        }
 
                     } catch (JSONException e) {
                         e.printStackTrace();

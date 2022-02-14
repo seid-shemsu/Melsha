@@ -34,7 +34,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
 import com.izhar.melsha.activities.ErrorActivity;
-import com.izhar.melsha.activities.LoanGiverAdapter;
+import com.izhar.melsha.adapters.LoanGiverAdapter;
 import com.izhar.melsha.models.LoanGiverModel;
 
 import org.json.JSONArray;

@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Melsha">
-        <activity android:name=".activities.ErrorActivity"></activity>
+        <activity android:name=".activities.TransactionsActivity"></activity>
+        <activity android:name=".activities.ErrorActivity" />
         <activity android:name=".details.CreditedItems" />
         <activity android:name=".details.CustomerDetail" />
         <activity android:name=".ui.loan.loans.PayLoan" />
