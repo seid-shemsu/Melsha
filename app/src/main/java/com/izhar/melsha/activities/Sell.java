@@ -30,6 +30,7 @@ public class Sell extends AppCompatActivity {
     private Button submit;
     private ProgressBar progress;
     ItemModel item;
+    String branch;
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -41,6 +42,7 @@ public class Sell extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.form_sell_item);
+        branch = getSharedPreferences("user", MODE_PRIVATE).getString("branch", "Guest");
         setTitle("Sell");
         item = (ItemModel) getIntent().getExtras().getSerializable("item");
         initialize();
@@ -129,7 +131,7 @@ public class Sell extends AppCompatActivity {
                 "&model=" + item.getModel()+
                 "&quantity=" + item.getQuantity()+
                 "&avg_price=" + item.getAvg_price()+
-                "&branch=" + store.getText().toString()+
+                "&branch=" + branch+
                 "&sell_price=" + Integer.parseInt(sold_price.getText().toString())+
                 "&sell_quantity=" + Integer.parseInt(quantity.getText().toString())+
                 "&branch_quantity=" + getBranchQuantity(),

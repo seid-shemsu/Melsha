@@ -1,6 +1,7 @@
 package com.izhar.melsha.ui.store;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -49,6 +50,7 @@ public class All extends Fragment {
     private ProgressBar progress;
     private TextView total_sell, total_profit;
     private int tot_sel=0, tot_profit=0;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,7 +63,15 @@ public class All extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         no_store = root.findViewById(R.id.no_store);
         progress = root.findViewById(R.id.progress);
-        getItems();
+        String branch;
+        branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
+        if (branch.equalsIgnoreCase("owner"))
+            getItems();
+        else {
+            progress.setVisibility(View.GONE);
+            no_store.setVisibility(View.VISIBLE);
+            no_store.setText("Unauthorized branch");
+        }
         return root;
     }
 

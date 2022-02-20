@@ -1,6 +1,7 @@
 package com.izhar.melsha.ui.loan.customers;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -99,12 +100,13 @@ public class GiversFragment extends Fragment {
     LoanGiverAdapter adapter;
     List<LoanGiverModel> filteredGivers = new ArrayList<>();
     EditText search;
-
+    String branch;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
         root = inflater.inflate(R.layout.fragment_givers, container, false);
+        branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
         root.findViewById(R.id.fab).setOnClickListener(v -> {
             Dialog dialog = new Dialog(getContext());
             dialog.setCanceledOnTouchOutside(false);
@@ -156,6 +158,7 @@ public class GiversFragment extends Fragment {
                 }
             });
         });
+
         search = root.findViewById(R.id.search);
         search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -206,7 +209,8 @@ public class GiversFragment extends Fragment {
 
     private void getCode(EditText code) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
-                "?action=getGiverPersonCode",
+                "?action=getGiverPersonCode" +
+                "&branch=" + branch,
                 response -> {
                     if (response.startsWith("<")) {
                         Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
@@ -276,6 +280,10 @@ public class GiversFragment extends Fragment {
                 e.printStackTrace();
             }
         });
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
     }

@@ -1,6 +1,8 @@
 package com.izhar.melsha.adapters;
 
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -13,16 +15,19 @@ import com.izhar.melsha.ui.store.Kore;
 
 public class TabAdapter extends FragmentStatePagerAdapter {
     private final int tab_numbers;
-
-    public TabAdapter(@NonNull FragmentManager fm, int tab_numbers) {
+    private String branch;
+    Context context;
+    public TabAdapter(@NonNull FragmentManager fm, int tab_numbers, Context context) {
         super(fm);
         this.tab_numbers = tab_numbers;
+        this.context =  context;
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
+        branch = context.getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
+        switch (position){
             case 0:
                 return new All();
             case 1:

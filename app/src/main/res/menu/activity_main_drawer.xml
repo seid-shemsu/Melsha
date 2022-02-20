@@ -25,10 +25,10 @@
             android:id="@+id/purchased"
             android:icon="@drawable/add"
             android:title="Purchased"/>
-        <item
+        <!--<item
             android:id="@+id/sold"
             android:icon="@drawable/search"
-            android:title="Search"/>
+            android:title="Search"/>-->
     </group>
     <group
         android:id="@+id/g3"

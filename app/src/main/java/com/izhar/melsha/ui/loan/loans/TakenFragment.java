@@ -1,5 +1,6 @@
 package com.izhar.melsha.ui.loan.loans;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -95,7 +97,7 @@ public class TakenFragment extends Fragment {
 
     TextInputLayout search_by;
     EditText search;
-    String action = "getAllCreditTaking";
+    String action = "getAllCreditTaking", branch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -103,6 +105,8 @@ public class TakenFragment extends Fragment {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
         root = inflater.inflate(R.layout.fragment_taken, container, false);
+        branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
+
         search = root.findViewById(R.id.search);
         search_by = root.findViewById(R.id.search_by);
         progress = root.findViewById(R.id.progress);
@@ -148,7 +152,8 @@ public class TakenFragment extends Fragment {
         recycler.setVisibility(View.GONE);
         progress.setVisibility(View.VISIBLE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
-                "?action=" + action,
+                "?action=" + action +
+                "&branch=" + branch,
                 response -> {
                     try {
                         loans.clear();
@@ -174,7 +179,8 @@ public class TakenFragment extends Fragment {
                             no.setVisibility(View.VISIBLE);
                         else
                             no.setVisibility(View.GONE);
-                    } catch (JSONException e) {
+                    }
+                    catch (JSONException e) {
                         e.printStackTrace();
                     }
 
@@ -190,6 +196,10 @@ public class TakenFragment extends Fragment {
                 e.printStackTrace();
             }
         });
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
     }

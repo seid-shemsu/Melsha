@@ -2,6 +2,8 @@ package com.izhar.melsha.ui.items;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -26,7 +29,9 @@ import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
 import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.adapters.ItemsAdapter;
+import com.izhar.melsha.adapters.LoanGiverAdapter;
 import com.izhar.melsha.models.ItemModel;
+import com.izhar.melsha.models.LoanGiverModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,8 +47,9 @@ public class ItemFragment extends Fragment {
     private TextView no_store;
     private ProgressBar progress;
     private List<ItemModel> items = new ArrayList<>();
+    private List<ItemModel> filteredItems = new ArrayList<>();
     private ItemsAdapter adapter;
-
+    EditText search;
     Utils utils = new Utils();
 
     @Override
@@ -97,6 +103,38 @@ public class ItemFragment extends Fragment {
                     Toast.makeText(getContext(), "enter valid data", Toast.LENGTH_SHORT).show();
             });
         });
+
+        search = root.findViewById(R.id.search);
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (search.getText().toString().isEmpty()) {
+                    adapter = new ItemsAdapter(getContext(), items);
+                } else {
+                    filteredItems.clear();
+                    for (ItemModel item : items) {
+                        if (item.getModel().toLowerCase().contains(search.getText().toString().toLowerCase()) ||
+                            item.getName().toLowerCase().contains(search.getText().toString().toLowerCase()))
+                            filteredItems.add(item);
+                    }
+                    adapter = new ItemsAdapter(getContext(), filteredItems);
+                }
+                recycler.removeAllViews();
+                recycler.setAdapter(adapter);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         getItems();
         return root;
     }
@@ -201,6 +239,10 @@ public class ItemFragment extends Fragment {
             error.printStackTrace();
         });
 
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
     }

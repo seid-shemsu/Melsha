@@ -14,17 +14,18 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/relative1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/relative1"
-            android:layout_margin="5dp">
+            android:layout_margin="5dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/credit_no"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="sample credit"
                 android:layout_alignParentStart="true"
+                android:text="sample credit"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -33,15 +34,18 @@
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="sample date"
                 android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:text="sample date" />
         </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/linear1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -54,19 +58,27 @@
                     android:id="@+id/person_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="person code"
                     android:layout_marginHorizontal="5dp"
                     android:layout_marginVertical="3dp"
-                    android:gravity="center" />
-
+                    android:gravity="center"
+                    android:text="person code"
+                    android:visibility="gone" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:text="Name" />
                 <TextView
                     android:id="@+id/person_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="5dp"
-                    android:text="sample name"
                     android:layout_marginVertical="3dp"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"/>
             </LinearLayout>
 
             <LinearLayout
@@ -76,22 +88,28 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:text="Quantity" />
+                <TextView
                     android:id="@+id/quantity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="12"
                     android:layout_marginHorizontal="5dp"
                     android:layout_marginVertical="3dp"
-                    android:gravity="center" />
+                    android:gravity="center"/>
 
                 <TextView
                     android:id="@+id/amount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="5dp"
-                    android:text="10000"
                     android:layout_marginVertical="3dp"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
@@ -104,16 +122,23 @@
                     android:id="@+id/payed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="$ 250000"
                     android:layout_marginHorizontal="5dp"
                     android:layout_marginVertical="3dp"
                     android:gravity="center"
+                    android:text="$ 250000"
                     android:textColor="@color/green"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
                 <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:text="Left" />
+                <TextView
                     android:id="@+id/left"
-                    android:text="$ 1000000"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="5dp"

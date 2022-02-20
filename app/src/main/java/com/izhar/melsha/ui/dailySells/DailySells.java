@@ -63,9 +63,16 @@ public class DailySells extends Fragment {
                         "&branch=" + user_branch +
                         "&amount=" + amount.getText().toString(),
                         response -> {
-                            Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
-                            System.out.println(response);
-                            amount.setEnabled(false);
+                            if (response.startsWith("<")){
+                                startActivity(new Intent((getContext()), ErrorActivity.class).putExtra("error", response));
+                                Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
+                                System.out.println(response);
+                            }
+                            else {
+                                Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
+                                System.out.println(response);
+                                amount.setEnabled(false);
+                            }
                             dialog.dismiss();
 
                         }, error -> {
@@ -96,11 +103,18 @@ public class DailySells extends Fragment {
                         System.out.println(response);
                     }
                     else {
-                        amount.setText(response + "");
+                        if (response.length() == 0)
+                            amount.setText("0");
+                        else
+                            amount.setText(response + "");
                     }
                 }, error -> {
             error.printStackTrace();
-            Toast.makeText(getContext(), "Unable to load data", Toast.LENGTH_SHORT).show();
+            try {
+                Toast.makeText(getActivity().getApplicationContext(), "Unable to load data", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);

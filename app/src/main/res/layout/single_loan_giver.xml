@@ -39,6 +39,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="wrap_content"
@@ -64,7 +65,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="name- "/>
+                    android:textSize="16sp"
+                    android:text="Name: "/>
 
                 <TextView
                     android:id="@+id/name"
@@ -73,20 +75,21 @@
                     android:layout_margin="5dp"
                     android:gravity="center"
                     android:textColor="@color/black"
-                    android:textSize="17sp"/>
+                    android:textSize="18sp"/>
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginHorizontal="10dp"
-            android:gravity="end"
+            android:gravity="end|center_vertical"
             android:id="@+id/linear1"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight=".3"
+                android:visibility="gone"
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="wrap_content"
@@ -107,6 +110,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:visibility="gone"
                 android:layout_weight=".3"
                 android:orientation="horizontal">
 
@@ -130,13 +134,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight=".3"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="left " />
+                    android:textSize="16sp"
+                    android:text="Left: " />
 
                 <TextView
                     android:id="@+id/left"
@@ -146,7 +152,7 @@
                     android:layout_marginVertical="2dp"
                     android:gravity="center"
                     android:textColor="@color/red"
-                    android:textSize="17sp" />
+                    android:textSize="18sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

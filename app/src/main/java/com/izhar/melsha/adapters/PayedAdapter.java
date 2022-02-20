@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -94,47 +96,78 @@ public class PayedAdapter extends RecyclerView.Adapter<PayedAdapter.Holder> {
             dialog.show();
             Button detail = dialog.findViewById(R.id.detail);
             Button action = dialog.findViewById(R.id.action);
-            detail.setText("Delete");
+            Button pay = dialog.findViewById(R.id.pay);
+
+            detail.setVisibility(View.GONE);
             action.setVisibility(View.GONE);
-            detail.setOnClickListener(v1 -> {
-                if (from.equalsIgnoreCase("loan")){
-                    delete("deleteLoanBYcrn&crn=" + payeds.get(getAdapterPosition()).getCRN());
-                }
-                else {
-                    delete("deleteCreditBYcrn&crn=" + payeds.get(getAdapterPosition()).getCRN());
-                }
+
+            pay.setText("Delete");
+            pay.setOnClickListener(v1 -> {
+                dialog.setContentView(R.layout.confirmation);
+                ImageView icon = dialog.findViewById(R.id.icon);
+                icon.setImageDrawable(context.getResources().getDrawable(R.drawable.delete));
+                TextView message = dialog.findViewById(R.id.message);
+                message.setText("You are going to delete this transaction.");
+                Button confirm = dialog.findViewById(R.id.confirm);
+                confirm.setText("Delete");
+                Button cancel = dialog.findViewById(R.id.cancel);
+                cancel.setOnClickListener(v2 -> {
+                    dialog.dismiss();
+                });
+                confirm.setOnClickListener(v2 -> {
+                    PayedModel paid = payeds.get(getAdapterPosition());
+                    if (from.equalsIgnoreCase("loan")){
+                        delete("deleteLoanBYcrn&crn=" + paid.getCRN(), paid.getPcode());
+                    }
+                    else {
+                        delete("deleteCreditBYcrn&crn=" + paid.getCRN(), paid.getPcode());
+                    }
+                });
+
             });
+        }
+
+        private void delete(String action, String pcode){
+            Dialog dialog = new Dialog(context);
+            dialog.setCancelable(false);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.loading);
+            dialog.show();
+            System.out.println(utils.getUrl(context) + "?action=" + action);
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(context) +
+                    "?action=" + action +
+                    "&pcode=" + pcode,
+                    response -> {
+                        if (response.startsWith("<")){
+                            dialog.dismiss();
+                            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                            System.out.println(response);
+                            context.startActivity(new Intent(context, ErrorActivity.class).putExtra("error", response));
+                        }
+                        else {
+                            dialog.dismiss();
+                            deleteItem(getAdapterPosition());
+                            Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
+                        }
+                    }, error -> {
+                error.printStackTrace();
+                dialog.dismiss();
+                context.startActivity(new Intent(context, ErrorActivity.class).putExtra("error", error.toString()));
+
+            });
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    0,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            RequestQueue requestQueue = Volley.newRequestQueue(context);
+            requestQueue.add(stringRequest);
         }
     }
     Utils utils = new Utils();
-    private void delete(String action){
-        Dialog dialog = new Dialog(context);
-        dialog.setCancelable(false);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.loading);
-        dialog.show();
-        System.out.println(utils.getUrl(context) + "?action=" + action);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(context) +
-                "?action=" + action,
-                response -> {
-                    if (response.startsWith("<")){
-                        dialog.dismiss();
-                        Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
-                        System.out.println(response);
-                        context.startActivity(new Intent(context, ErrorActivity.class).putExtra("error", response));
-                    }
-                    else {
-                        dialog.dismiss();
-                        Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
-                    }
-                }, error -> {
-            error.printStackTrace();
-            dialog.dismiss();
-            context.startActivity(new Intent(context, ErrorActivity.class).putExtra("error", error.toString()));
-
-        });
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
+    private void deleteItem(int adapterPosition) {
+        payeds.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+        notifyItemRangeChanged(0, payeds.size());
     }
 }

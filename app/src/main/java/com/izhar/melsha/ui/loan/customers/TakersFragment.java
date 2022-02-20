@@ -1,6 +1,7 @@
 package com.izhar.melsha.ui.loan.customers;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -99,12 +100,14 @@ public class TakersFragment extends Fragment {
     LoanTakerAdapter adapter;
     List<LoanTakerModel> filteredTakers = new ArrayList<>();
     EditText search;
+    String branch;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
         root = inflater.inflate(R.layout.fragment_takers, container, false);
+        branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
         root.findViewById(R.id.fab).setOnClickListener(v -> {
             Dialog dialog = new Dialog(getContext());
             dialog.setCanceledOnTouchOutside(false);
@@ -208,7 +211,8 @@ public class TakersFragment extends Fragment {
 
     private void getCode(EditText code) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
-                "?action=getTakerPersonCode",
+                "?action=getTakerPersonCode" +
+                "&branch=" + branch,
                 response -> {
                     if (response.startsWith("<")){
                         System.out.println(response);
@@ -280,6 +284,10 @@ public class TakersFragment extends Fragment {
                 e.printStackTrace();
             }
         });
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
     }

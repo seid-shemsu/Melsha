@@ -1,5 +1,6 @@
 package com.izhar.melsha.ui.bank;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -98,6 +100,10 @@ public class BankFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_bank, container, false);
+        root.findViewById(R.id.transactions).setOnClickListener(v -> {
+            startActivity(new Intent(getContext(), Transactions.class));
+        });
+
         refresh = root.findViewById(R.id.refresh);
         refresh.setOnRefreshListener(() -> getBanks());
         //refresh.setRefreshing(true);
@@ -135,7 +141,14 @@ public class BankFragment extends Fragment {
                     Toast.makeText(getContext(), "enter valid data", Toast.LENGTH_SHORT).show();
             });
         });
-        getBanks();
+        String branch;
+        branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
+        if (branch.equalsIgnoreCase("owner")) {
+            getBanks();
+            fab.setVisibility(View.VISIBLE);
+        }
+        else
+            progress.setVisibility(View.GONE);
         return root;
     }
 
@@ -215,6 +228,10 @@ public class BankFragment extends Fragment {
                 e.printStackTrace();
             }
         });
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
     }

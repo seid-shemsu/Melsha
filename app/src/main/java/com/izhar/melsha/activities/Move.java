@@ -1,6 +1,7 @@
 package com.izhar.melsha.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -27,6 +28,7 @@ public class Move extends AppCompatActivity {
     private Button submit;
     private ProgressBar progress;
     ItemModel item;
+    String branch;
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -37,6 +39,7 @@ public class Move extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        branch = getSharedPreferences("user", MODE_PRIVATE).getString("branch", "Guest");
         setContentView(R.layout.activity_move);
         setTitle("Move");
         item = (ItemModel) getIntent().getExtras().getSerializable("item");
@@ -68,7 +71,7 @@ public class Move extends AppCompatActivity {
                 "&quantity=" + item.getQuantity()+
                 "&avg_price=" + item.getAvg_price()+
                 "&branchTo=" + to_store.getText().toString()+
-                "&branch=" + from_store.getText().toString()+
+                "&branch=" + branch+
                 "&sell_quantity=" + Integer.parseInt(quantity.getText().toString())+
                 "&branch_quantity=" + getBranchQuantity(),
                 response -> {

@@ -33,6 +33,7 @@ public class Purchase extends AppCompatActivity {
     private Button submit;
     private ProgressBar progress;
     ItemModel item;
+    String branch;
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -44,6 +45,7 @@ public class Purchase extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.form_purchase_item);
+        branch = getSharedPreferences("user", MODE_PRIVATE).getString("branch", "Guest");
         setTitle("Purchase");
         initialize();
         getStores();
@@ -63,9 +65,6 @@ public class Purchase extends AppCompatActivity {
 
     private boolean valid() {
         if (purchased_price.getText().toString().length() <= 0){
-            return false;
-        }
-        if (store.getText().toString().length() <= 0){
             return false;
         }
         if (quantity.getText().toString().length() <= 0){
@@ -123,7 +122,7 @@ public class Purchase extends AppCompatActivity {
                 "&model=" + item.getModel()+
                 "&quantity=" + item.getQuantity()+
                 "&avg_price=" + item.getAvg_price()+
-                "&branch=" + store.getText().toString()+
+                "&branch=" + branch+
                 "&pr_quantity=" + Integer.parseInt(quantity.getText().toString())+
                 "&pr_price=" + Integer.parseInt(purchased_price.getText().toString())+
                 "&branch_quantity=" + getBranchQuantity(),

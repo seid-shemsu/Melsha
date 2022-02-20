@@ -3,7 +3,7 @@ package com.izhar.melsha.models;
 import java.io.Serializable;
 
 public class TransactionModel implements Serializable {
-    String date, id, bank, type;
+    String date, id, bank, type, code;
     int amount;
 
     public String getDate() {
@@ -44,5 +44,13 @@ public class TransactionModel implements Serializable {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

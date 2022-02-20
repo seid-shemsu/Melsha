@@ -1,4 +1,4 @@
-package com.izhar.melsha.ui.loan.credits;
+package com.izhar.melsha.ui.bank;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,16 +6,12 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,10 +26,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
 import com.izhar.melsha.activities.ErrorActivity;
-import com.izhar.melsha.adapters.LoanAdapter;
-import com.izhar.melsha.adapters.PayedAdapter;
-import com.izhar.melsha.models.LoanModel;
-import com.izhar.melsha.models.PayedModel;
+import com.izhar.melsha.adapters.TransactionAdapter;
+import com.izhar.melsha.models.BankModel;
+import com.izhar.melsha.models.TransactionModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,10 +39,10 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ReturnedFragment#newInstance} factory method to
+ * Use the {@link WithdrawFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ReturnedFragment extends Fragment {
+public class WithdrawFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,7 +53,7 @@ public class ReturnedFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ReturnedFragment() {
+    public WithdrawFragment() {
         // Required empty public constructor
     }
 
@@ -71,8 +66,8 @@ public class ReturnedFragment extends Fragment {
      * @return A new instance of fragment PayedFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ReturnedFragment newInstance(String param1, String param2) {
-        ReturnedFragment fragment = new ReturnedFragment();
+    public static WithdrawFragment newInstance(String param1, String param2) {
+        WithdrawFragment fragment = new WithdrawFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -90,30 +85,31 @@ public class ReturnedFragment extends Fragment {
     }
 
     View root;
+    Utils utils = new Utils();
+    TextInputLayout search_by;
+    EditText search;
     private RecyclerView recycler;
     private ProgressBar progress;
     private TextView no;
-    PayedAdapter adapter;
-    Utils utils = new Utils();
-    List<PayedModel> payeds = new ArrayList<>();
-    List<PayedModel> filteredPaid = new ArrayList<>();
-    TextInputLayout search_by;
-    EditText search;
+    List<TransactionModel> transactions = new ArrayList<>();
+    List<TransactionModel> filteredTransactions = new ArrayList<>();
+    TransactionAdapter adapter;
+    BankModel bank;
     String branch;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        setHasOptionsMenu(true);
         root = inflater.inflate(R.layout.fragment_payed, container, false);
         branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
+
         search = root.findViewById(R.id.search);
         search_by = root.findViewById(R.id.search_by);
+
         progress = root.findViewById(R.id.progress);
         no = root.findViewById(R.id.no);
         recycler = root.findViewById(R.id.recycler);
         recycler.setHasFixedSize(true);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        getPayed();
+
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -123,17 +119,18 @@ public class ReturnedFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (search.getText().toString().isEmpty())
-                    adapter = new PayedAdapter(getContext(), payeds, "credit");
+                    adapter = new TransactionAdapter(getContext(), transactions);
                 else {
-                    filteredPaid.clear();
-                    for (PayedModel paid : payeds) {
-                        if (paid.getTCN().toLowerCase().contains(search.getText().toString().toLowerCase()) || paid.getPcode().toLowerCase().contains(search.getText().toString().toLowerCase()) || paid.getCRN().toLowerCase().contains(search.getText().toString().toLowerCase()))
-                            filteredPaid.add(paid);
+                    filteredTransactions.clear();
+                    for (TransactionModel transaction : transactions) {
+                        if (transaction.getCode().toLowerCase().contains(search.getText().toString().toLowerCase()))
+                            filteredTransactions.add(transaction);
                     }
-                    adapter = new PayedAdapter(getContext(), filteredPaid, "credit");
+                    adapter = new TransactionAdapter(getContext(), filteredTransactions);
                 }
                 recycler.removeAllViews();
                 recycler.setAdapter(adapter);
+
             }
 
             @Override
@@ -141,51 +138,54 @@ public class ReturnedFragment extends Fragment {
 
             }
         });
+        getTransactions();
         return root;
     }
 
-
-    private void getPayed() {
+    private void getTransactions() {
         recycler.setVisibility(View.GONE);
         progress.setVisibility(View.VISIBLE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
-                "?action=getAllReturningB" +
+                "?action=getWithdraw" +
                 "&branch=" + branch,
                 response -> {
                     try {
-                        payeds.clear();
-
+                        transactions.clear();
                         JSONArray array = new JSONArray(response);
                         for (int i = 0; i < array.length(); i++) {
                             JSONObject object = array.getJSONObject(i);
-                            PayedModel payed = new PayedModel();
-                            payed.setCRN(object.getString("rcn"));
-                            payed.setTCN(object.getString("TCN"));
-                            payed.setPcode(object.getString("pcode"));
-                            payed.setPname(object.getString("pname"));
-                            payed.setBirr(object.getString("amount"));
-                            payed.setDate(object.getString("date"));
-                            payeds.add(payed);
+                            TransactionModel transaction = new TransactionModel();
+                            transaction.setId(object.getString("WN"));
+                            transaction.setCode(object.getString("code"));
+                            transaction.setBank(object.getString("name"));
+                            transaction.setDate(object.getString("date"));
+                            transaction.setType("Withdraw");
+                            if (object.get("amount").toString().equalsIgnoreCase("") || object.get("amount").toString().startsWith("#")) {
+                                transaction.setAmount(0);
+                            } else {
+                                transaction.setAmount((object.getInt("amount")));
+                            }
+                            transactions.add(transaction);
                         }
-                        adapter = new PayedAdapter(getContext(), payeds, "credit");
+                        adapter = new TransactionAdapter(getContext(), transactions);
                         recycler.setAdapter(adapter);
-                        recycler.setVisibility(View.VISIBLE);
                         progress.setVisibility(View.GONE);
-                        if (payeds.size() == 0)
+                        recycler.setVisibility(View.VISIBLE);
+                        if (transactions.isEmpty())
                             no.setVisibility(View.VISIBLE);
                         else
                             no.setVisibility(View.GONE);
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", e.toString()));
                     }
 
                 }, error -> {
-            startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", error.getMessage()));
             error.printStackTrace();
             try {
                 progress.setVisibility(View.GONE);
-                Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_LONG)
-                        .setAction("Retry", v -> getPayed())
+                snackbar.make(progress, "Unable to load the data.", Snackbar.LENGTH_LONG)
+                        .setAction("Retry", v -> getTransactions())
                         .show();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -199,15 +199,5 @@ public class ReturnedFragment extends Fragment {
         requestQueue.add(stringRequest);
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.refresh, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.refresh)
-            getPayed();
-        return false;
-    }
+    Snackbar snackbar;
 }

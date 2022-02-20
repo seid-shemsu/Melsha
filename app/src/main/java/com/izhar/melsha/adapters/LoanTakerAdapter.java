@@ -20,6 +20,7 @@ import com.izhar.melsha.R;
 import com.izhar.melsha.details.CustomerDetail;
 import com.izhar.melsha.models.LoanTakerModel;
 import com.izhar.melsha.ui.loan.customers.GiveLoan;
+import com.izhar.melsha.ui.loan.loans.PayLoan;
 
 import java.util.List;
 
@@ -94,7 +95,10 @@ public class LoanTakerAdapter extends RecyclerView.Adapter<LoanTakerAdapter.Hold
             dialog.show();
             TextView detail = dialog.findViewById(R.id.detail);
             TextView action = dialog.findViewById(R.id.action);
+            Button pay = dialog.findViewById(R.id.pay);
             action.setText("Give Credit");
+            pay.setText("Get Paid");
+
             action.setOnClickListener(v1 -> {
                 dialog.dismiss();
                 context.startActivity(new Intent(context, GiveLoan.class).putExtra("taker", takers.get(getAdapterPosition())));
@@ -105,6 +109,12 @@ public class LoanTakerAdapter extends RecyclerView.Adapter<LoanTakerAdapter.Hold
                 context.startActivity(new Intent(context, CustomerDetail.class)
                         .putExtra("from", "taker")
                         .putExtra("pcode", takers.get(getAdapterPosition()).getCode()));
+            });
+            pay.setOnClickListener(v1 -> {
+                dialog.dismiss();
+                context.startActivity(new Intent(context, PayLoan.class)
+                        .putExtra("from", "takers")
+                        .putExtra("taker", takers.get(getAdapterPosition())));
             });
         }
     }

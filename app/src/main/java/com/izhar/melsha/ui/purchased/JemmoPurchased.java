@@ -1,5 +1,6 @@
 package com.izhar.melsha.ui.purchased;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -49,7 +50,15 @@ public class JemmoPurchased extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         no_store = root.findViewById(R.id.no_store);
         progress = root.findViewById(R.id.progress);
-        getPurchased();
+        String branch;
+        branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
+        if (branch.equalsIgnoreCase("Jemmo") || branch.equalsIgnoreCase("owner"))
+            getPurchased();
+        else {
+            progress.setVisibility(View.GONE);
+            no_store.setVisibility(View.VISIBLE);
+            no_store.setText("Unauthorized branch");
+        }
         return root;
     }
 

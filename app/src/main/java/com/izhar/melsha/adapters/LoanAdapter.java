@@ -10,14 +10,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.izhar.melsha.R;
+import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.details.CreditedItems;
 import com.izhar.melsha.models.LoanModel;
 import com.izhar.melsha.ui.loan.loans.PayLoan;
@@ -50,7 +59,7 @@ public class LoanAdapter extends RecyclerView.Adapter<LoanAdapter.Holder> {
         holder.quantity.setText(loan.getQuantity());
         holder.amount.setText(loan.getAmount());
         holder.payed.setText(loan.getPayed());
-        holder.left.setText(loan.getLeft());
+        holder.left.setText("$ " + loan.getLeft());
 
         try {
             holder.date.setText(loan.getDate());
@@ -104,28 +113,90 @@ public class LoanAdapter extends RecyclerView.Adapter<LoanAdapter.Holder> {
             dialog.setContentView(R.layout.customer_menu);
             dialog.show();
             Button detail = dialog.findViewById(R.id.detail);
-            Button action = dialog.findViewById(R.id.action);
-            if (from.equalsIgnoreCase("loan"))
-                action.setText("Pay loan");
-            else if (from.equalsIgnoreCase("credit"))
-                action.setText("get  paid");
+            detail.setVisibility(View.GONE);
 
-            action.setOnClickListener(v1 -> {
-                dialog.dismiss();
-                context.startActivity(new Intent(context, PayLoan.class)
-                        .putExtra("from", from)
-                        .putExtra("loan", loans.get(getAdapterPosition())));
+            Button action = dialog.findViewById(R.id.action);
+            action.setText("Detail");
+
+            Button pay = dialog.findViewById(R.id.pay);
+            pay.setText("Delete");
+
+            //delete clicked
+
+            pay.setOnClickListener(v1 -> {
+                dialog.setContentView(R.layout.confirmation);
+                ImageView icon = dialog.findViewById(R.id.icon);
+                icon.setImageDrawable(context.getResources().getDrawable(R.drawable.delete));
+                TextView message = dialog.findViewById(R.id.message);
+                message.setText("You are going to delete this transaction.");
+                Button confirm = dialog.findViewById(R.id.confirm);
+                confirm.setText("Delete");
+                Button cancel = dialog.findViewById(R.id.cancel);
+                cancel.setOnClickListener(v2 -> {
+                    dialog.dismiss();
+                });
+                confirm.setOnClickListener(v2 -> {
+                    dialog.dismiss();
+                    if (from.equalsIgnoreCase("loan")){
+                        delete("deleteCreditA&cna=" + loans.get(getAdapterPosition()).getCredit_no());
+                    }
+                    else {
+                        delete("deleteCreditB&cnb=" + loans.get(getAdapterPosition()).getCredit_no());
+                    }
+                });
             });
 
-            detail.setOnClickListener(v1 -> {
+            //detail clicked
+            action.setOnClickListener(v1 -> {
                 dialog.dismiss();
-
                 context.startActivity(new Intent(context, CreditedItems.class)
                         .putExtra("cn", loans.get(getAdapterPosition()).getCredit_no())
                         .putExtra("from", from));
 
             });
         }
+
+        private void delete(String action){
+            Dialog dialog = new Dialog(context);
+            dialog.setCancelable(false);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.loading);
+            dialog.show();
+            System.out.println(utils.getUrl(context) + "?action=" + action);
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(context) +
+                    "?action=" + action,
+                    response -> {
+                        if (response.startsWith("<")){
+                            dialog.dismiss();
+                            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                            System.out.println(response);
+                            context.startActivity(new Intent(context, ErrorActivity.class).putExtra("error", response));
+                        }
+                        else {
+                            dialog.dismiss();
+                            deleteItem(getAdapterPosition());
+                            Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
+                        }
+                    }, error -> {
+                error.printStackTrace();
+                dialog.dismiss();
+                context.startActivity(new Intent(context, ErrorActivity.class).putExtra("error", error.toString()));
+
+            });
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    0,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            RequestQueue requestQueue = Volley.newRequestQueue(context);
+            requestQueue.add(stringRequest);
+        }
     }
 
+    Utils utils = new Utils();
+    private void deleteItem(int adapterPosition) {
+        loans.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+        notifyItemRangeChanged(0, loans.size());
+    }
 }

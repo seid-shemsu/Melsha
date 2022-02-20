@@ -24,11 +24,11 @@
         android:name="com.izhar.melsha.ui.purchased.PurchasedFragment"
         android:label="Purchased"
         tools:layout="@layout/fragment_purchased"/>
-    <fragment
+    <!--<fragment
         android:id="@+id/sold"
         android:name="com.izhar.melsha.ui.sold.SoldFragment"
         android:label="Search"
-        tools:layout="@layout/fragment_sold"/>
+        tools:layout="@layout/fragment_sold"/>-->
     <fragment
         android:id="@+id/daily_sells"
         android:name="com.izhar.melsha.ui.dailySells.DailySells"

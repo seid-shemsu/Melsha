@@ -52,7 +52,7 @@ public class GiveLoan extends AppCompatActivity {
     ArrayAdapter<CharSequence> stores;
     AutoCompleteTextView store;
     Dialog dialog;
-
+    String branch;
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -66,7 +66,7 @@ public class GiveLoan extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.form_loan_take);
         setTitle("Give Credit");
-
+        branch = getSharedPreferences("user", MODE_PRIVATE).getString("branch", "Guest");
         dialog = new Dialog(this);
         dialog.setCancelable(false);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -123,7 +123,7 @@ public class GiveLoan extends AppCompatActivity {
                                 String co = code.getText().toString();
                                 String am = amount.getText().toString();
                                 String qua = quantity.getText().toString();
-                                String st = store.getText().toString();
+                                String st = branch;
                                 JSONObject item = new JSONObject();
                                 item.put("code", co);
                                 item.put("quantity", Integer.parseInt(qua));
@@ -153,7 +153,7 @@ public class GiveLoan extends AppCompatActivity {
             amount = view.findViewById(R.id.amount);
             quantity = view.findViewById(R.id.quantity);
             SoldModel soldModel = new SoldModel();
-            soldModel.setFrom_store(store.getText().toString());
+            soldModel.setFrom_store(branch);
             soldModel.setSold_price(Integer.parseInt(amount.getText().toString()));
             soldModel.setQuantity(Integer.parseInt(quantity.getText().toString()));
             soldModelMap.put(code.getText().toString(), soldModel);
@@ -249,6 +249,10 @@ public class GiveLoan extends AppCompatActivity {
             error.printStackTrace();
             Toast.makeText(this, "network error", Toast.LENGTH_SHORT).show();
         });
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
@@ -267,7 +271,7 @@ public class GiveLoan extends AppCompatActivity {
             Toast.makeText(this, "specify credit amount", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (store.getText().toString().isEmpty()) {
+        if (branch.isEmpty()) {
             Toast.makeText(this, "specify store", Toast.LENGTH_SHORT).show();
             return false;
         }

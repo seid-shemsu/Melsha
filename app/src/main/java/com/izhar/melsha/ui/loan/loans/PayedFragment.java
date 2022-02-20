@@ -1,5 +1,6 @@
 package com.izhar.melsha.ui.loan.loans;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -20,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -96,13 +98,14 @@ public class PayedFragment extends Fragment {
     Utils utils = new Utils();
     TextInputLayout search_by;
     EditText search;
-
+    String branch;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
         root = inflater.inflate(R.layout.fragment_payed, container, false);
+        branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
 
         search = root.findViewById(R.id.search);
         search_by = root.findViewById(R.id.search_by);
@@ -147,7 +150,8 @@ public class PayedFragment extends Fragment {
         recycler.setVisibility(View.GONE);
         progress.setVisibility(View.VISIBLE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
-                "?action=getAllPay ",
+                "?action=getAllPay" +
+                "&branch=" + branch,
                 response -> {
                     try {
                         payeds.clear();
@@ -187,6 +191,10 @@ public class PayedFragment extends Fragment {
                 e.printStackTrace();
             }
         });
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
     }

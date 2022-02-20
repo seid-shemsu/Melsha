@@ -40,6 +40,7 @@
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="5dp"
             app:cardCornerRadius="5dp">
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
@@ -64,6 +65,7 @@
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="5dp"
             app:cardCornerRadius="5dp">
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
@@ -88,6 +90,7 @@
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="5dp"
             app:cardCornerRadius="5dp">
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
@@ -112,6 +115,7 @@
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="5dp"
             app:cardCornerRadius="5dp">
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
@@ -160,6 +164,7 @@
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="5dp"
             app:cardCornerRadius="5dp">
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
@@ -182,6 +187,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
+            android:visibility="gone"
             android:layout_marginVertical="5dp"
             app:cardCornerRadius="5dp">
 
@@ -209,8 +215,8 @@
                 android:id="@+id/submit"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
                 android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
                 android:backgroundTint="@color/purple_700"
                 android:text="Submit"
                 app:cornerRadius="100dp" />

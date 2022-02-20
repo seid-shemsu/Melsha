@@ -1,7 +1,5 @@
 package com.izhar.melsha.ui.loan.loans;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,12 +20,16 @@ import com.android.volley.toolbox.Volley;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
 import com.izhar.melsha.activities.ErrorActivity;
+import com.izhar.melsha.models.LoanGiverModel;
 import com.izhar.melsha.models.LoanModel;
+import com.izhar.melsha.models.LoanTakerModel;
 
 public class PayLoan extends AppCompatActivity {
     EditText pname, pcode, pphone, cna, amount;
     Utils utils = new Utils();
     LoanModel loan;
+    LoanGiverModel giver;
+    LoanTakerModel taker;
     String from, action;
     Button pay;
 
@@ -34,6 +38,7 @@ public class PayLoan extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,38 +46,45 @@ public class PayLoan extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_pay_loan);
-        setTitle("Pay Loan");
+
+        loan = (LoanModel) getIntent().getExtras().getSerializable("loan");
+        giver = (LoanGiverModel) getIntent().getExtras().getSerializable("giver");
+        taker = (LoanTakerModel) getIntent().getExtras().getSerializable("taker");
+        from = getIntent().getExtras().getString("from");
         pay = findViewById(R.id.pay);
         pname = findViewById(R.id.pname);
         pcode = findViewById(R.id.pcode);
         pphone = findViewById(R.id.pphone);
-        cna = findViewById(R.id.cna);
         amount = findViewById(R.id.amount);
-        loan = (LoanModel) getIntent().getExtras().getSerializable("loan");
-        from = getIntent().getExtras().getString("from");
-        pname.setText(loan.getPerson_name());
-        pcode.setText(loan.getPerson_code());
-        cna.setText(loan.getCredit_no());
 
-        if (from.equalsIgnoreCase("credit")){
+        if (from.equalsIgnoreCase("givers")) {
+            setTitle("Pay Loan");
+            pay.setText("pay");
+            pname.setText(giver.getName());
+            pcode.setText(giver.getCode());
+            pphone.setText(giver.getPhone());
+            action = "returnToGiver";
+        } else {
             pay.setText("get paid");
             setTitle("Get Paid");
+            pname.setText(taker.getName());
+            pcode.setText(taker.getCode());
+            pphone.setText(taker.getPhone());
+            action = "receivingFromTaker";
         }
+
         pay.setOnClickListener(v -> {
-            if (!amount.getText().toString().isEmpty()){
-                if (from.equalsIgnoreCase("loan")) {
-                    if (Integer.parseInt(loan.getLeft()) < Integer.parseInt(amount.getText().toString())){
+            if (!amount.getText().toString().isEmpty()) {
+                if (from.equalsIgnoreCase("givers")) {
+                    if ((giver.getLeft()) < Integer.parseInt(amount.getText().toString())) {
                         Toast.makeText(this, "Paying amount is greater then what is left.", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                    } else {
                         pay();
                     }
-                }
-                else {
-                    if (Integer.parseInt(loan.getLeft()) < Integer.parseInt(amount.getText().toString())){
+                } else {
+                    if ((taker.getLeft()) < Integer.parseInt(amount.getText().toString())) {
                         Toast.makeText(this, "Paying amount is greater then what is left.", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                    } else {
                         getPaid();
                     }
                 }
@@ -80,7 +92,7 @@ public class PayLoan extends AppCompatActivity {
         });
     }
 
-    private void pay(){
+    private void pay() {
         Dialog dialog = new Dialog(this);
         dialog.setCancelable(false);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -88,23 +100,22 @@ public class PayLoan extends AppCompatActivity {
         dialog.setContentView(R.layout.loading);
         dialog.show();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(this) +
-                "?action=returnToGiver"+
-                "&pcode=" + loan.getPerson_code()+
-                "&pname=" + loan.getPerson_name()+
-                "&pphone=" + "000000"+
-                "&ra_amount=" + amount.getText().toString()+
-                "&cna=" + loan.getCredit_no(),
+                "?action=" + action +
+                "&pcode=" + pcode.getText().toString() +
+                "&pname=" + pname.getText().toString() +
+                "&pphone=" + pphone.getText().toString() +
+                "&ra_amount=" + amount.getText().toString()/*+
+                "&cna=" + loan.getCredit_no()*/,
                 response -> {
-                    if (response.contains("Successfully")){
+                    if (response.startsWith("<")) {
+                        System.out.println(response);
+                        startActivity(new Intent(this, ErrorActivity.class).putExtra("error", response));
+                        Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    } else {
                         Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
                         finish();
                     }
-                    else {
-                        System.out.println(response);
-                        Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    }
-
                 }, error -> {
             System.out.println(error.getMessage());
             onBackPressed();
@@ -117,7 +128,7 @@ public class PayLoan extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    private void getPaid(){
+    private void getPaid() {
         Dialog dialog = new Dialog(this);
         dialog.setCancelable(false);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -125,18 +136,17 @@ public class PayLoan extends AppCompatActivity {
         dialog.setContentView(R.layout.loading);
         dialog.show();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(this) +
-                "?action=receivingFromTaker"+
-                "&pcode=" + loan.getPerson_code()+
-                "&pname=" + loan.getPerson_name()+
-                "&pphone=" + "000000"+
-                "&rb_amount=" + amount.getText().toString()+
-                "&cnb=" + loan.getCredit_no(),
+                "?action=" + action +
+                "&pcode=" + pcode.getText().toString() +
+                "&pname=" + pname.getText().toString() +
+                "&pphone=" + pphone.getText().toString() +
+                "&rb_amount=" + amount.getText().toString()/*+
+                "&cnb=" + loan.getCredit_no()*/,
                 response -> {
-                    if (response.contains("Successfully")){
+                    if (response.contains("Successfully")) {
                         Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
                         onBackPressed();
-                    }
-                    else {
+                    } else {
                         startActivity(new Intent((this), ErrorActivity.class).putExtra("error", response));
                         System.out.println(response);
                         Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();

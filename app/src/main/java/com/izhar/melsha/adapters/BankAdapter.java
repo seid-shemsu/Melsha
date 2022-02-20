@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -92,15 +93,10 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.Holder> {
             Button cancel = dialog.findViewById(R.id.cancel);
             EditText amount = dialog.findViewById(R.id.amount);
             TextView title = dialog.findViewById(R.id.title);
-            Button detail = dialog.findViewById(R.id.detail);
-            detail.setOnClickListener(v1 -> {
-                context.startActivity(new Intent(context, TransactionsActivity.class).putExtra("bank", banks.get(getAdapterPosition())));
-            });
 
             cancel.setOnClickListener(v1 -> {
                 linear2.setVisibility(View.GONE);
                 title.setVisibility(View.GONE);
-                detail.setVisibility(View.VISIBLE);
                 linear1.setVisibility(View.VISIBLE);
             });
 
@@ -108,7 +104,6 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.Holder> {
                 linear1.setVisibility(View.GONE);
                 linear2.setVisibility(View.VISIBLE);
                 title.setVisibility(View.VISIBLE);
-                detail.setVisibility(View.GONE);
                 action = "Withdraw";
                 submit.setText(action);
                 title.setText(action);
@@ -116,7 +111,6 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.Holder> {
             deposit.setOnClickListener(v1 -> {
                 linear1.setVisibility(View.GONE);
                 linear2.setVisibility(View.VISIBLE);
-                detail.setVisibility(View.GONE);
                 title.setVisibility(View.VISIBLE);
                 action = "Deposit";
                 submit.setText(action);
@@ -167,6 +161,10 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.Holder> {
                 context.startActivity(new Intent(context, ErrorActivity.class).putExtra("error", error.toString()));
 
             });
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    0,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             RequestQueue requestQueue = Volley.newRequestQueue(context);
             requestQueue.add(stringRequest);
         }

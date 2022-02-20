@@ -52,7 +52,7 @@ public class TakeLoan extends AppCompatActivity {
     Map<String, ItemModel> items = new HashMap<>();
     Map<String, PurchasedModel> purchasedModelMap = new HashMap<>();
     AutoCompleteTextView store;
-
+    String branch;
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -64,6 +64,7 @@ public class TakeLoan extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        branch = getSharedPreferences("user", MODE_PRIVATE).getString("branch", "Guest");
         setContentView(R.layout.form_loan_take);
         setTitle("Take Loan");
         dialog = new Dialog(this);
@@ -127,7 +128,7 @@ public class TakeLoan extends AppCompatActivity {
                                 String co = code.getText().toString();
                                 String am = amount.getText().toString();
                                 String qua = quantity.getText().toString();
-                                String st = store.getText().toString();
+                                String st = branch;
                                 JSONObject item = new JSONObject();
                                 item.put("code", co);
                                 item.put("quantity", Integer.parseInt(qua));
@@ -157,7 +158,7 @@ public class TakeLoan extends AppCompatActivity {
             amount = view.findViewById(R.id.amount);
             quantity = view.findViewById(R.id.quantity);
             PurchasedModel purchasedModel = new PurchasedModel();
-            purchasedModel.setStore(store.getText().toString());
+            purchasedModel.setStore(branch);
             purchasedModel.setPurchased_price(Integer.parseInt(amount.getText().toString()));
             purchasedModel.setQuantity(Integer.parseInt(quantity.getText().toString()));
             purchasedModelMap.put(code.getText().toString(), purchasedModel);
@@ -194,11 +195,6 @@ public class TakeLoan extends AppCompatActivity {
         }
         if (amount.getText().toString().isEmpty()) {
             Toast.makeText(this, "specify credit amount", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (store.getText().toString().isEmpty()) {
-            Toast.makeText(this, "specify store", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (linear.getChildCount() == 0) {
@@ -337,6 +333,10 @@ public class TakeLoan extends AppCompatActivity {
             error.printStackTrace();
             Toast.makeText(this, "network error", Toast.LENGTH_SHORT).show();
         });
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
@@ -361,15 +361,7 @@ public class TakeLoan extends AppCompatActivity {
     Utils utils = new Utils();
 
     private void takeLoan(String code, String name, String phone, String amount, String quantity, String items, String jPurchased) {
-        String link = utils.getUrl(this) + "?action=takingLoanA" +
-                "&pcode=" + code +
-                "&pname=" + name +
-                "&pphone=" + phone +
-                "&ca_amount=" + amount +
-                "&ca_quantity=" + quantity +
-                "&JSA=" + items +
-                "&jPurchased=" + jPurchased;
-        System.out.println(link);
+
         Dialog dialog = new Dialog(this);
         dialog.setCancelable(false);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

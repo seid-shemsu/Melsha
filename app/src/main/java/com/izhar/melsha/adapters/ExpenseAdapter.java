@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -74,10 +75,22 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.Holder> 
             delete = itemView.findViewById(R.id.delete);
 
             delete.setOnClickListener(v -> {
-                System.out.println(expenses.get(getAdapterPosition()).getNumber());
-                System.out.println(expenses.get(getAdapterPosition()).getReason());
-                System.out.println(expenses.get(getAdapterPosition()).getAmount());
-                doDelete(expenses.get(getAdapterPosition()).getNumber());
+                Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.confirmation);
+                ImageView icon = dialog.findViewById(R.id.icon);
+                icon.setImageDrawable(context.getResources().getDrawable(R.drawable.delete));
+                TextView message = dialog.findViewById(R.id.message);
+                message.setText("You are going to delete this expense.");
+                Button confirm = dialog.findViewById(R.id.confirm);
+                confirm.setText("Delete");
+                Button cancel = dialog.findViewById(R.id.cancel);
+                cancel.setOnClickListener(v2 -> {
+                    dialog.dismiss();
+                });
+                confirm.setOnClickListener(v1 -> {
+                    doDelete(expenses.get(getAdapterPosition()).getNumber());
+                });
+
             });
             edit.setOnClickListener(v -> {
                 if (type.isEnabled()){
@@ -96,6 +109,40 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.Holder> 
             });
         }
 
+        private void doDelete(String number) {
+            Dialog dialog = new Dialog(context);
+            dialog.setCancelable(false);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.loading);
+            dialog.show();
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(context) +
+                    "?action=deleteExpense&num=" + number,
+                    response -> {
+                        if (response.startsWith("<")){
+                            dialog.dismiss();
+                            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                            System.out.println(response);
+                            context.startActivity(new Intent(context, ErrorActivity.class).putExtra("error", response));
+                        }
+                        else {
+                            dialog.dismiss();
+                            deleteItem(getAdapterPosition());
+                            Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
+                        }
+                    }, error -> {
+                error.printStackTrace();
+                dialog.dismiss();
+                context.startActivity(new Intent(context, ErrorActivity.class).putExtra("error", error.toString()));
+
+            });
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    0,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            RequestQueue requestQueue = Volley.newRequestQueue(context);
+            requestQueue.add(stringRequest);
+        }
     }
 
     private void doEdit(String number, String reason, int amount) {
@@ -130,39 +177,19 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.Holder> 
             context.startActivity(new Intent(context, ErrorActivity.class).putExtra("error", error.toString()));
 
         });
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
 
-    private void doDelete(String number) {
-        Dialog dialog = new Dialog(context);
-        dialog.setCancelable(false);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.loading);
-        dialog.show();
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(context) +
-                "?action=deleteExpense&num=" + number,
-                response -> {
-                    if (response.startsWith("<")){
-                        dialog.dismiss();
-                        Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
-                        System.out.println(response);
-                        context.startActivity(new Intent(context, ErrorActivity.class).putExtra("error", response));
-                    }
-                    else {
-                        dialog.dismiss();
-                        Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
-                    }
-                }, error -> {
-            error.printStackTrace();
-            dialog.dismiss();
-            context.startActivity(new Intent(context, ErrorActivity.class).putExtra("error", error.toString()));
-
-        });
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
-    }
 
     Utils utils = new Utils();
+    private void deleteItem(int adapterPosition) {
+        expenses.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+        notifyItemRangeChanged(0, expenses.size());
+    }
 }

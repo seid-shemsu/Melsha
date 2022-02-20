@@ -1,6 +1,7 @@
 package com.izhar.melsha.ui.store;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -63,7 +64,15 @@ public class Kore extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         no_store = root.findViewById(R.id.no_store);
         progress = root.findViewById(R.id.progress);
-        getItems();
+        String branch;
+        branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
+        if (branch.equalsIgnoreCase("Kore") || branch.equalsIgnoreCase("owner"))
+            getItems();
+        else {
+            progress.setVisibility(View.GONE);
+            no_store.setVisibility(View.VISIBLE);
+            no_store.setText("Unauthorized branch");
+        }
         return root;
     }
 

@@ -193,6 +193,7 @@ public class Expense extends Fragment {
         System.out.println(items);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
                 "?action=doDailyEx" +
+                "&branch=" + branch+
                 "&jExpense=" + items,
                 response -> {
                     if (response.startsWith("<")) {
@@ -218,7 +219,8 @@ public class Expense extends Fragment {
         recycler.setVisibility(View.GONE);
         progress.setVisibility(View.VISIBLE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
-                "?action=getDailyEx",
+                "?action=getDailyEx" +
+                "&branch=" + branch,
                 response -> {
                     try {
                         expenses.clear();
@@ -263,6 +265,10 @@ public class Expense extends Fragment {
                 e.printStackTrace();
             }
         });
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
     }
