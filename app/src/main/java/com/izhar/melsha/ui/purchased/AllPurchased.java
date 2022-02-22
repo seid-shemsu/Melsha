@@ -95,7 +95,7 @@ public class AllPurchased extends Fragment {
                                 purchased.setPurchased_price(object.getInt("pr_price"));
                             }
 
-                            purchases.add(purchased);
+                            purchases.add(0, purchased);
                         }
                         adapter = new PurchasedAdapter(getContext(), purchases);
                         recycler.setAdapter(adapter);

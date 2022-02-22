@@ -43,6 +43,8 @@ public class Sell extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.form_sell_item);
         branch = getSharedPreferences("user", MODE_PRIVATE).getString("branch", "Guest");
+        if (branch.equalsIgnoreCase("owner"))
+            findViewById(R.id.branch_card).setVisibility(View.VISIBLE);
         setTitle("Sell");
         item = (ItemModel) getIntent().getExtras().getSerializable("item");
         initialize();
@@ -74,6 +76,10 @@ public class Sell extends AppCompatActivity {
         }
         if (sold_price.getText().toString().length() <= 0) {
             return false;
+        }
+        if (branch.equalsIgnoreCase("owner")){
+            if (store.getText().toString().length() == 0)
+                return false;
         }
         return true;
     }
@@ -109,7 +115,8 @@ public class Sell extends AppCompatActivity {
     }
 
     private int getBranchQuantity(){
-        switch (store.getText().toString()){
+        String b = branch.equalsIgnoreCase("owner") ? store.getText().toString() : branch;
+        switch (b){
             case "Dessie":
                 return item.getDessie();
             case "Kore":
@@ -131,21 +138,19 @@ public class Sell extends AppCompatActivity {
                 "&model=" + item.getModel()+
                 "&quantity=" + item.getQuantity()+
                 "&avg_price=" + item.getAvg_price()+
-                "&branch=" + branch+
+                "&branch=" + getBranch()+
                 "&sell_price=" + Integer.parseInt(sold_price.getText().toString())+
                 "&sell_quantity=" + Integer.parseInt(quantity.getText().toString())+
                 "&branch_quantity=" + getBranchQuantity(),
                 response -> {
-
-                        if (response.equalsIgnoreCase("success")){
-                            Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
-                            onBackPressed();
-                        }
-                        else {
-                            Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
+                        if (response.startsWith("<")){
                             startActivity(new Intent(this, ErrorActivity.class).putExtra("error", response));
                             progress.setVisibility(View.GONE);
                             submit.setVisibility(View.VISIBLE);
+                        }
+                        else {
+                            Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+                            onBackPressed();
                         }
 
                 }, error -> {
@@ -158,5 +163,9 @@ public class Sell extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+    }
+
+    private String getBranch() {
+        return branch.equalsIgnoreCase("owner") ? store.getText().toString() : branch;
     }
 }

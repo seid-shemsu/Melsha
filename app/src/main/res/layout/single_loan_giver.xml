@@ -18,13 +18,15 @@
             android:layout_height="60dp"
             app:cardCornerRadius="30dp"
             android:layout_gravity="center_vertical"
-            app:cardBackgroundColor="#50A52E8F"
+            app:cardBackgroundColor="#25A52E8F"
             android:layout_margin="5dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="27sp"
                 android:textColor="@color/black"
+                android:text="A"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:textAllCaps="true"
                 android:id="@+id/letter"/>
@@ -61,12 +63,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textSize="16sp"
-                    android:text="Name: "/>
 
                 <TextView
                     android:id="@+id/name"

@@ -133,7 +133,8 @@ public class TakersFragment extends Fragment {
                             "?action=newLoanTaker" +
                             "&pcode=" + code.getText().toString() +
                             "&pname=" + name.getText().toString().replace(" ", "_") +
-                            "&pphone=" + phone.getText().toString().trim(),
+                            "&pphone=" + phone.getText().toString().trim() +
+                            "&branch=" + branch,
                             response -> {
 
                                 if (response.contains("Successfully")) {
@@ -235,7 +236,8 @@ public class TakersFragment extends Fragment {
         progress.setVisibility(View.VISIBLE);
         recycler.setVisibility(View.GONE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
-                "?action=getAllLoanTaker",
+                "?action=getAllLoanTaker" +
+                "&branch=" + branch,
                 response -> {
                     try {
                         takers.clear();

@@ -46,6 +46,8 @@ public class Purchase extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.form_purchase_item);
         branch = getSharedPreferences("user", MODE_PRIVATE).getString("branch", "Guest");
+        if (branch.equalsIgnoreCase("owner"))
+            findViewById(R.id.branch_card).setVisibility(View.VISIBLE);
         setTitle("Purchase");
         initialize();
         getStores();
@@ -69,6 +71,10 @@ public class Purchase extends AppCompatActivity {
         }
         if (quantity.getText().toString().length() <= 0){
             return false;
+        }
+        if (branch.equalsIgnoreCase("owner")){
+            if (store.getText().toString().length() == 0)
+                return false;
         }
         return true;
     }
@@ -100,7 +106,8 @@ public class Purchase extends AppCompatActivity {
     }
 
     private int getBranchQuantity(){
-        switch (store.getText().toString()){
+        String b = branch.equalsIgnoreCase("owner") ? store.getText().toString() : branch;
+        switch (b){
             case "Dessie":
                 return item.getDessie();
             case "Kore":
@@ -122,22 +129,19 @@ public class Purchase extends AppCompatActivity {
                 "&model=" + item.getModel()+
                 "&quantity=" + item.getQuantity()+
                 "&avg_price=" + item.getAvg_price()+
-                "&branch=" + branch+
+                "&branch=" + getBranch() +
                 "&pr_quantity=" + Integer.parseInt(quantity.getText().toString())+
                 "&pr_price=" + Integer.parseInt(purchased_price.getText().toString())+
                 "&branch_quantity=" + getBranchQuantity(),
                 response -> {
-
-                    if (response.contains("success")){
-                        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                        finish();
-                    }
-                    else {
-                        Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
+                    if (response.startsWith("<")){
                         startActivity(new Intent(this, ErrorActivity.class).putExtra("error", response));
                         progress.setVisibility(View.GONE);
                         submit.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+                        onBackPressed();
                     }
 
                 }, error -> {
@@ -152,5 +156,9 @@ public class Purchase extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+    }
+
+    private String getBranch() {
+        return branch.equalsIgnoreCase("owner") ? store.getText().toString() : branch;
     }
 }

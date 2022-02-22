@@ -3,13 +3,10 @@ package com.izhar.melsha.ui.home;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +21,6 @@ import com.android.volley.toolbox.Volley;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
 import com.izhar.melsha.activities.ErrorActivity;
-import com.izhar.melsha.models.ItemModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,23 +76,22 @@ public class HomeFragment extends Fragment {
     }
 
     private View root;
-    private CardView bank, credit, stoke, sells;
+    private CardView bank, credit, stoke, sells, monthly;
     private String branch;
-    private TextView stock, date, unpaid_to_me, unpaid_to_others, j_sold, d_sold, k_sold, j_profit, d_profit, k_profit, deposited, un_deposited;
+    private TextView stock, date, unpaid_to_me, unpaid_to_others,
+            j_sold, d_sold, k_sold, j_sold_m, d_sold_m, k_sold_m,
+            j_profit, d_profit, k_profit, j_profit_m, d_profit_m, k_profit_m,
+            j_expense, k_expense, d_expense,
+            deposited, un_deposited,
+            net_profit;
     private Dialog dialog;
     SwipeRefreshLayout refresh;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_home, container, false);
-        dialog = new Dialog(getContext());
-        dialog.setCancelable(true);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.loading);
-        dialog.show();
-
         refresh = root.findViewById(R.id.refresh);
         refresh.setOnRefreshListener(() -> {
             if (branch.equalsIgnoreCase("owner"))
@@ -109,26 +104,42 @@ public class HomeFragment extends Fragment {
         credit = root.findViewById(R.id.card_credit);
         stoke = root.findViewById(R.id.card_stock);
         sells = root.findViewById(R.id.card_sells);
+        monthly = root.findViewById(R.id.card_sells_monthly);
+
         branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
         if (branch.equalsIgnoreCase("owner")) {
             bank.setVisibility(View.VISIBLE);
             credit.setVisibility(View.VISIBLE);
             stoke.setVisibility(View.VISIBLE);
             sells.setVisibility(View.VISIBLE);
+            monthly.setVisibility(View.VISIBLE);
             unpaid_to_me = root.findViewById(R.id.unpaid_to_me);
             unpaid_to_others = root.findViewById(R.id.unpaid_to_others);
             j_sold = root.findViewById(R.id.jemmo_sold);
             d_sold = root.findViewById(R.id.dessie_sold);
             k_sold = root.findViewById(R.id.kore_sold);
+            j_sold_m = root.findViewById(R.id.jemmo_sold_monthly);
+            d_sold_m = root.findViewById(R.id.dessie_sold_monthly);
+            k_sold_m = root.findViewById(R.id.kore_sold_monthly);
+
             j_profit = root.findViewById(R.id.jemmo_profit);
             d_profit = root.findViewById(R.id.dessie_profit);
             k_profit = root.findViewById(R.id.kore_profit);
+
+            j_profit_m = root.findViewById(R.id.jemmo_profit_monthly);
+            d_profit_m = root.findViewById(R.id.dessie_profit_monthly);
+            k_profit_m = root.findViewById(R.id.kore_profit_monthly);
+
+            j_expense = root.findViewById(R.id.jemmo_expense);
+            d_expense = root.findViewById(R.id.dessie_expense);
+            k_expense = root.findViewById(R.id.kore_expense);
+
             deposited = root.findViewById(R.id.deposited);
             un_deposited = root.findViewById(R.id.un_deposited);
             stock = root.findViewById(R.id.stock);
+            net_profit = root.findViewById(R.id.net_profit);
             getData();
-        } else
-            dialog.dismiss();
+        }
         getDate();
         return root;
     }
@@ -167,19 +178,40 @@ public class HomeFragment extends Fragment {
                         JSONArray array = new JSONArray(response);
                         JSONObject object = array.getJSONObject(0);
                         DecimalFormat decimalFormat = new DecimalFormat("#,###");
+                        //yesterday
                         d_sold.setText(decimalFormat.format(object.getInt("shop3s")));
                         j_sold.setText(decimalFormat.format(object.getInt("shop1s")));
                         k_sold.setText(decimalFormat.format(object.getInt("shop2s")));
                         d_profit.setText(decimalFormat.format(object.getInt("shop3p")));
                         j_profit.setText(decimalFormat.format(object.getInt("shop1p")));
                         k_profit.setText(decimalFormat.format(object.getInt("shop2p")));
+
+                        //monthly
+                        d_sold_m.setText(decimalFormat.format(object.getInt("mshop3s")));
+                        j_sold_m.setText(decimalFormat.format(object.getInt("mshop1s")));
+                        k_sold_m.setText(decimalFormat.format(object.getInt("mshop2s")));
+                        d_profit_m.setText(decimalFormat.format(object.getInt("mshop3p")));
+                        j_profit_m.setText(decimalFormat.format(object.getInt("mshop1p")));
+                        k_profit_m.setText(decimalFormat.format(object.getInt("mshop2p")));
+                        d_expense.setText(decimalFormat.format(object.getInt("eshop3")));
+                        j_expense.setText(decimalFormat.format(object.getInt("eshop1")));
+                        k_expense.setText(decimalFormat.format(object.getInt("eshop2")));
+
+                        d_profit_m.setTextColor(getContext().getResources().getColor(R.color.green));
+                        j_profit_m.setTextColor(getContext().getResources().getColor(R.color.green));
+                        k_profit_m.setTextColor(getContext().getResources().getColor(R.color.green));
+                        d_expense.setTextColor(getContext().getResources().getColor(R.color.red));
+                        j_expense.setTextColor(getContext().getResources().getColor(R.color.red));
+                        k_expense.setTextColor(getContext().getResources().getColor(R.color.red));
+                        //profit
+                        net_profit.setText(decimalFormat.format(object.getInt("netp")) + "\nETB");
+
                         deposited.setText(decimalFormat.format(object.getInt("bankb")) + "\nETB");
                         un_deposited.setText(decimalFormat.format(object.getInt("excash")) + "\nETB");
                         stock.setText(decimalFormat.format(object.getInt("stockb")) + "\nETB");
                         unpaid_to_me.setText(decimalFormat.format(object.getInt("creditb")) + "\nETB");
                         unpaid_to_others.setText(decimalFormat.format(object.getInt("loanb")) + "\nETB");
                         refresh.setRefreshing(false);
-                        dialog.dismiss();
                     } catch (JSONException e) {
                         e.printStackTrace();
                         startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", e.toString()));

@@ -88,6 +88,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.Holder> 
                     dialog.dismiss();
                 });
                 confirm.setOnClickListener(v1 -> {
+                    dialog.dismiss();
                     doDelete(expenses.get(getAdapterPosition()).getNumber());
                 });
 
@@ -184,7 +185,6 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.Holder> 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
-
 
     Utils utils = new Utils();
     private void deleteItem(int adapterPosition) {

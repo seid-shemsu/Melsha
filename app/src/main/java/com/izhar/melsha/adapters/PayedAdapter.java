@@ -115,6 +115,7 @@ public class PayedAdapter extends RecyclerView.Adapter<PayedAdapter.Holder> {
                     dialog.dismiss();
                 });
                 confirm.setOnClickListener(v2 -> {
+                    dialog.dismiss();
                     PayedModel paid = payeds.get(getAdapterPosition());
                     if (from.equalsIgnoreCase("loan")){
                         delete("deleteLoanBYcrn&crn=" + paid.getCRN(), paid.getPcode());

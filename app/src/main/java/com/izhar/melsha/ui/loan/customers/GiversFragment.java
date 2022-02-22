@@ -132,7 +132,8 @@ public class GiversFragment extends Fragment {
                             "?action=newLoanGiver" +
                             "&pcode=" + code.getText().toString() +
                             "&pname=" + name.getText().toString().replace(" ", "_") +
-                            "&pphone=" + phone.getText().toString().trim(),
+                            "&pphone=" + phone.getText().toString().trim() +
+                            "&branch=" + branch,
                             response -> {
 
                                 if (response.contains("Successfully")) {
@@ -201,7 +202,14 @@ public class GiversFragment extends Fragment {
         recycler = root.findViewById(R.id.recycler);
         recycler.setHasFixedSize(true);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        getGivers();
+        if (branch.equalsIgnoreCase("owner"))
+            getGivers();
+        else {
+            no.setText("Unauthorized access");
+            no.setVisibility(View.VISIBLE);
+            progress.setVisibility(View.GONE);
+            root.findViewById(R.id.fab).setVisibility(View.GONE);
+        }
         return root;
     }
 
@@ -232,7 +240,8 @@ public class GiversFragment extends Fragment {
         recycler.setVisibility(View.GONE);
         progress.setVisibility(View.VISIBLE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
-                "?action=getAllLoanGiver",
+                "?action=getAllLoanGiver" +
+                "&branch=" + branch,
                 response -> {
                     try {
                         givers.clear();

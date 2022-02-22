@@ -122,7 +122,7 @@ public class Dessie extends Fragment {
                                 sold.setProfit(object.getInt("profit"));
                                 tot_profit += object.getInt("profit") * object.getInt("quantity");
                             }
-                            solds.add(sold);
+                            solds.add(0, sold);
                         }
                         total_sell.setText("$ " + tot_sel);
                         total_profit.setText("$ " + tot_profit);

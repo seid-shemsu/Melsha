@@ -195,6 +195,8 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="5dp"
             android:layout_marginVertical="5dp"
+            android:visibility="gone"
+            android:id="@+id/branch_card"
             android:layout_marginHorizontal="10dp">
 
             <LinearLayout

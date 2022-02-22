@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -53,6 +54,7 @@ public class TakeLoan extends AppCompatActivity {
     Map<String, PurchasedModel> purchasedModelMap = new HashMap<>();
     AutoCompleteTextView store;
     String branch;
+    CardView branch_card;
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -67,6 +69,9 @@ public class TakeLoan extends AppCompatActivity {
         branch = getSharedPreferences("user", MODE_PRIVATE).getString("branch", "Guest");
         setContentView(R.layout.form_loan_take);
         setTitle("Take Loan");
+        branch_card = findViewById(R.id.branch_card);
+        if (branch.equalsIgnoreCase("owner"))
+            branch_card.setVisibility(View.VISIBLE);
         dialog = new Dialog(this);
         dialog.setCancelable(false);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -124,11 +129,14 @@ public class TakeLoan extends AppCompatActivity {
                                 code = view.findViewById(R.id.code);
                                 amount = view.findViewById(R.id.amount);
                                 quantity = view.findViewById(R.id.quantity);
-
                                 String co = code.getText().toString();
                                 String am = amount.getText().toString();
                                 String qua = quantity.getText().toString();
-                                String st = branch;
+                                String st;
+                                if (branch.equalsIgnoreCase("owner"))
+                                     st = branch;
+                                else
+                                    st = store.getText().toString();
                                 JSONObject item = new JSONObject();
                                 item.put("code", co);
                                 item.put("quantity", Integer.parseInt(qua));
@@ -158,7 +166,10 @@ public class TakeLoan extends AppCompatActivity {
             amount = view.findViewById(R.id.amount);
             quantity = view.findViewById(R.id.quantity);
             PurchasedModel purchasedModel = new PurchasedModel();
-            purchasedModel.setStore(branch);
+            if (branch.equalsIgnoreCase("owner"))
+                purchasedModel.setStore(store.getText().toString());
+            else
+                purchasedModel.setStore(branch);
             purchasedModel.setPurchased_price(Integer.parseInt(amount.getText().toString()));
             purchasedModel.setQuantity(Integer.parseInt(quantity.getText().toString()));
             purchasedModelMap.put(code.getText().toString(), purchasedModel);
@@ -201,12 +212,14 @@ public class TakeLoan extends AppCompatActivity {
             Toast.makeText(this, "add some item", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         if (items.size() == 0) {
             Toast.makeText(this, "add some item", Toast.LENGTH_SHORT).show();
             return false;
         }
-
+        if (branch.equalsIgnoreCase("owner") && store.getText().toString().length() <= 0){
+            Toast.makeText(this, "select branch", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         for (int i = 0; i < linear.getChildCount(); i++) {
             View view = linear.getChildAt(i);
             EditText code, amount, quantity;
