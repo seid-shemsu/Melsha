@@ -60,7 +60,7 @@ public class PurchasedAdapter extends RecyclerView.Adapter<PurchasedAdapter.Hold
         holder.quantity.setText(String.valueOf(purchased.getQuantity()));
         holder.purchased_price.setText("$" + purchased.getPurchased_price());
         holder.code.setText(purchased.getCode());
-        holder.branch.setText(String.valueOf(purchased.getStore()));
+        holder.branch.setText(getStore(purchased));
 
         /*holder.name.setText(purchased.getName());
         holder.size.setText(String.valueOf(purchased.getSize()));
@@ -85,67 +85,6 @@ public class PurchasedAdapter extends RecyclerView.Adapter<PurchasedAdapter.Hold
             purchased_price = itemView.findViewById(R.id.purchased_price);
             branch = itemView.findViewById(R.id.branch);
             code = itemView.findViewById(R.id.code);
-            /*name = itemView.findViewById(R.id.name);
-            size = itemView.findViewById(R.id.size);
-            model = itemView.findViewById(R.id.model);
-            date = itemView.findViewById(R.id.date);
-            delete = itemView.findViewById(R.id.delete);
-            move = itemView.findViewById(R.id.move);
-
-            delete.setOnClickListener(v -> {
-                Dialog dialog = new Dialog(context);
-                dialog.setCanceledOnTouchOutside(false);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.confirmation);
-                dialog.show();
-                TextView message = dialog.findViewById(R.id.message);
-                message.setText("Are you sure to delete this item?");
-                ImageView icon = dialog.findViewById(R.id.icon);
-                icon.setImageDrawable(context.getResources().getDrawable(R.drawable.delete));
-                Button cancel = dialog.findViewById(R.id.cancel);
-                cancel.setOnClickListener(v1 -> {
-                    dialog.dismiss();
-                });
-                Button delete = dialog.findViewById(R.id.confirm);
-                delete.setText("Delete");
-                delete.setOnClickListener(v1 -> {
-                    dialog.setContentView(R.layout.loading);
-                    StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(context) +
-                            "?action=getSingleItem" +
-                            "&code=" + purchases.get(getAdapterPosition()).getCode(),
-                            response -> {
-                                try {
-                                    JSONArray array = new JSONArray(response);
-                                    JSONObject object = array.getJSONObject(0);
-                                    int total_quantity = object.getInt(purchases.get(getAdapterPosition()).getStore());
-                                    if (total_quantity >= purchases.get(getAdapterPosition()).getQuantity()) {
-                                        deletePurchased(purchases.get(getAdapterPosition()).getId());
-                                        setDeleted(getAdapterPosition());
-                                        dialog.dismiss();
-                                    } else {
-                                        dialog.dismiss();
-                                        Toast.makeText(context, "unable to delete", Toast.LENGTH_SHORT).show();
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }, error -> {
-                        error.printStackTrace();
-                        Snackbar.make(delete, "Unable to delete.", Snackbar.LENGTH_LONG)
-                                .setAction("Ok", v2 -> {
-
-                                })
-                                .show();
-
-                    });
-                    RequestQueue requestQueue = Volley.newRequestQueue(context);
-                    requestQueue.add(stringRequest);
-                });
-
-            });*/
-
             linear.setOnClickListener(v -> {
                 context.startActivity(new Intent(context, PurchasedDetail.class)
                         .putExtra("purchased", purchases.get(getAdapterPosition())));
@@ -193,5 +132,18 @@ public class PurchasedAdapter extends RecyclerView.Adapter<PurchasedAdapter.Hold
         purchases.remove(adapterPosition);
         notifyItemRemoved(adapterPosition);
         notifyItemRangeChanged(0, purchases.size());
+    }
+
+    private String getStore(PurchasedModel purchased) {
+        switch ((purchased.getStore())){
+            case "Jemmo":
+                return "ሱቅ 1";
+            case "Kore":
+                return "ሱቅ 2";
+            case "Dessie":
+                return "ሱቅ 3";
+            default:
+                return "";
+        }
     }
 }

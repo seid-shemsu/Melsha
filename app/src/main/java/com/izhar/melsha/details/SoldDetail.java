@@ -1,17 +1,19 @@
 package com.izhar.melsha.details;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -20,24 +22,29 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.izhar.melsha.R;
 import com.izhar.melsha.Utils;
+import com.izhar.melsha.activities.ErrorActivity;
 import com.izhar.melsha.models.SoldModel;
 
 public class SoldDetail extends AppCompatActivity {
     EditText quantity, purchased_price, code, name, size, model, store, date, profit, sold_price;
     Button delete;
     SoldModel sold;
+    String branch;
 
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_sold_detail);
+        branch = getSharedPreferences("user", MODE_PRIVATE).getString("branch", "Guest");
+
         sold = (SoldModel) getIntent().getExtras().getSerializable("sold");
         setTitle(sold.getCode());
         quantity = findViewById(R.id.quantity);
@@ -51,16 +58,21 @@ public class SoldDetail extends AppCompatActivity {
         profit = findViewById(R.id.profit);
         sold_price = findViewById(R.id.sold_price);
         delete = findViewById(R.id.delete);
+        if (!branch.equalsIgnoreCase("owner")) {
+            delete.setVisibility(View.GONE);
+        }
+
+
         quantity.setText(String.valueOf(sold.getQuantity()));
         purchased_price.setText(String.valueOf(sold.getPurchased_price()));
-        store.setText(String.valueOf(sold.getFrom_store()));
+        store.setText(getStore());
         code.setText(sold.getCode());
         name.setText(sold.getName());
         size.setText(String.valueOf(sold.getSize()));
         model.setText(sold.getModel());
         profit.setText(String.valueOf(sold.getProfit()));
         sold_price.setText(String.valueOf(sold.getSold_price()));
-        date.setText(sold.getDate().substring(0, sold.getDate().indexOf('T')));
+        date.setText(sold.getDate());
         delete.setOnClickListener(v -> {
             Dialog dialog = new Dialog(this);
             dialog.setCanceledOnTouchOutside(false);
@@ -83,15 +95,22 @@ public class SoldDetail extends AppCompatActivity {
                 dialog.dismiss();
             });
         });
+
     }
+
     private void deleteSold(String id) {
         Utils utils = new Utils();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(this) +
-                "?action=deleteSoldItem"+
+                "?action=deleteSoldItem" +
+                "&branch=" + branch +
                 "&id=" + id,
                 response -> {
-                    Toast.makeText(this, "Successfully Deleted", Toast.LENGTH_SHORT).show();
-                    finish();
+                    if (response.startsWith("<")) {
+                        startActivity(new Intent(this, ErrorActivity.class).putExtra("error", response));
+                    } else {
+                        Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
                 }, error -> {
             System.out.println(error.getMessage());
             Toast.makeText(this, "Error Occurred", Toast.LENGTH_SHORT).show();
@@ -104,4 +123,16 @@ public class SoldDetail extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
+    private String getStore() {
+        switch ((sold.getFrom_store())) {
+            case "Jemmo":
+                return "ሱቅ 1";
+            case "Kore":
+                return "ሱቅ 3";
+            case "Dessie":
+                return "ሱቅ 2";
+            default:
+                return "";
+        }
+    }
 }

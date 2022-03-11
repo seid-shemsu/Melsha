@@ -1,4 +1,4 @@
-package com.izhar.melsha.ui.store;
+package com.izhar.melsha.ui.sold;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -40,8 +39,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Dessie extends Fragment {
-    public Dessie() {
+public class Jemmo extends Fragment {
+    public Jemmo() {
     }
 
     View root;
@@ -52,11 +51,12 @@ public class Dessie extends Fragment {
     private ProgressBar progress;
     private TextView total_sell, total_profit;
     private int tot_sel=0, tot_profit=0;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //setHasOptionsMenu(true);
-        root = inflater.inflate(R.layout.fragment_dessie, container, false);
+        root = inflater.inflate(R.layout.fragment_jemmo, container, false);
         total_profit = root.findViewById(R.id.total_profit);
         total_sell = root.findViewById(R.id.total_sell);
         recycler = root.findViewById(R.id.recycler);
@@ -66,8 +66,9 @@ public class Dessie extends Fragment {
         progress = root.findViewById(R.id.progress);
         String branch;
         branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
-        if (branch.equalsIgnoreCase("Dessie") || branch.equalsIgnoreCase("owner"))
+        if (branch.equalsIgnoreCase("Jemmo") || branch.equalsIgnoreCase("owner"))
             getItems();
+
         else {
             progress.setVisibility(View.GONE);
             no_store.setVisibility(View.VISIBLE);
@@ -76,10 +77,101 @@ public class Dessie extends Fragment {
         return root;
     }
 
-    void getItems() {
+    /*void getItems() {
         Utils utils = new Utils();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
-                "?action=getBranchItemSold&branch=Dessie",
+                "?action=getBranchItemSold&branch=Jemmo",
+                response -> {
+                    try {
+                        solds.clear();
+                        JSONArray array = new JSONArray(response);
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject object = array.getJSONObject(i);
+                            SoldModel sold = new SoldModel();
+                            sold.setId(String.valueOf(object.get("id")));
+                            sold.setCode(object.getString("code"));
+                            sold.setName(object.getString("name"));
+                            sold.setType(object.getString("type"));
+                            sold.setModel(object.getString("model"));
+                            sold.setDate(object.getString("date"));
+                            sold.setFrom_store(object.getString("branch"));
+                            if (object.get("size").toString().equalsIgnoreCase("") || object.get("size").toString().startsWith("#")) {
+                                sold.setSize("0");
+                            } else {
+                                sold.setSize(object.getString("size"));
+                            }
+                            if (object.get("quantity").toString().equalsIgnoreCase("") || object.get("quantity").toString().startsWith("#")) {
+                                sold.setQuantity(0);
+                            } else {
+                                sold.setQuantity(object.getInt("quantity"));
+                            }
+                            if (object.get("pr_price").toString().equalsIgnoreCase("") || object.get("pr_price").toString().startsWith("#")) {
+                                sold.setPurchased_price(0);
+                            } else {
+                                sold.setPurchased_price(object.getInt("pr_price"));
+                            }
+                            if (object.get("sell_price").toString().equalsIgnoreCase("") || object.get("sell_price").toString().startsWith("#")) {
+                                sold.setSold_price(0);
+                            } else {
+                                sold.setSold_price(object.getInt("sell_price"));
+                                tot_sel+=object.getInt("sell_price") * object.getInt("quantity");
+                            }
+                            if (object.get("profit").toString().equalsIgnoreCase("") || object.get("profit").toString().startsWith("#")) {
+                                sold.setProfit(0);
+
+                            } else {
+                                sold.setProfit(object.getInt("profit"));
+                                tot_profit += object.getInt("profit");
+                            }
+                            solds.add(sold);
+                        }
+                        total_sell.setText("$ " + tot_sel);
+                        total_profit.setText("$ " + tot_profit);
+                        adapter = new SoldAdapter(getContext(), solds);
+                        recycler.setAdapter(adapter);
+                        progress.setVisibility(View.GONE);
+
+                        if (solds.size() == 0)
+                            no_store.setVisibility(View.VISIBLE);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }, error -> {
+            System.out.println(error.getMessage());
+            try {
+                Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_LONG)
+                        .setAction("Retry", v -> getItems())
+                        .show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(stringRequest);
+    }*/
+    void getItems() {
+        Utils utils = new Utils();
+        solds = utils.getSold(getContext(), "Jemmo");
+
+        for (SoldModel soldModel : solds) {
+            tot_sel += soldModel.getSold_price() * soldModel.getQuantity();
+            tot_profit = soldModel.getProfit();
+        }
+        total_sell.setText("$ " + tot_sel);
+        total_profit.setText("$ " + tot_profit);
+        adapter = new SoldAdapter(getContext(), solds);
+        recycler.setAdapter(adapter);
+        progress.setVisibility(View.GONE);
+        if (solds.size() == 0)
+            no_store.setVisibility(View.VISIBLE);
+    }
+
+    void getItemsByDate(String date) {
+        Utils utils = new Utils();
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
+                "?action=getBranchItemSold&branch=Dessie" +
+                "&date=" + date,
                 response -> {
                     try {
                         solds.clear();
@@ -134,83 +226,7 @@ public class Dessie extends Fragment {
                             no_store.setVisibility(View.VISIBLE);
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }
-
-                }, error -> {
-            error.printStackTrace();
-            try {
-                Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_LONG)
-                        .setAction("Retry", v -> getItems())
-                        .show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        requestQueue.add(stringRequest);
-    }
-
-    void getItemsByDate(String date) {
-        Utils utils = new Utils();
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
-                "?action=getBranchItemSold&branch=Dessie" +
-                "&date=" + date,
-                response -> {
-                    try {
-                        solds.clear();
-                        JSONArray array = new JSONArray(response);
-                        for (int i = 0; i < array.length(); i++) {
-                            JSONObject object = array.getJSONObject(i);
-                            SoldModel sold = new SoldModel();
-                            sold.setId(String.valueOf(object.get("id")));
-                            sold.setCode(object.getString("code"));
-                            sold.setName(object.getString("name"));
-                            sold.setType(object.getString("type"));
-                            sold.setModel(object.getString("model"));
-                            sold.setDate(object.getString("date"));
-                            sold.setFrom_store(object.getString("branch"));
-                            if (object.get("size").toString().equalsIgnoreCase("") || object.get("size").toString().startsWith("#")) {
-                                sold.setSize("0");
-                            } else {
-                                sold.setSize(object.getString("size"));
-                            }
-                            if (object.get("quantity").toString().equalsIgnoreCase("") || object.get("quantity").toString().startsWith("#")) {
-                                sold.setQuantity(0);
-                            } else {
-                                sold.setQuantity(object.getInt("quantity"));
-                            }
-                            if (object.get("pr_price").toString().equalsIgnoreCase("") || object.get("pr_price").toString().startsWith("#")) {
-                                sold.setPurchased_price(0);
-                            } else {
-                                sold.setPurchased_price(object.getInt("pr_price"));
-                            }
-                            if (object.get("sell_price").toString().equalsIgnoreCase("") || object.get("sell_price").toString().startsWith("#")) {
-                                sold.setSold_price(0);
-                            } else {
-                                sold.setSold_price(object.getInt("sell_price"));
-                                tot_sel+=object.getInt("sell_price");
-                            }
-                            if (object.get("profit").toString().equalsIgnoreCase("") || object.get("profit").toString().startsWith("#")) {
-                                sold.setProfit(0);
-
-                            } else {
-                                sold.setProfit(object.getInt("profit"));
-                                tot_profit += object.getInt("profit") * object.getInt("quantity");
-                            }
-                            solds.add(sold);
-                        }
-                        total_sell.setText("$ " + tot_sel);
-                        total_profit.setText("$ " + tot_profit);
-                        adapter = new SoldAdapter(getContext(), solds);
-                        recycler.setAdapter(adapter);
-                        progress.setVisibility(View.GONE);
-
-                        if (solds.size() == 0)
-                            no_store.setVisibility(View.VISIBLE);
-                    } catch (JSONException e) {
                         startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", e.toString()));
-                        e.printStackTrace();
                     }
 
                 }, error -> {

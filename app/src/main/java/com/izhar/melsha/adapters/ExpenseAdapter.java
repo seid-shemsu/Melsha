@@ -36,8 +36,10 @@ import java.util.List;
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.Holder> {
     Context context;
     List<ExpenseModel> expenses;
-    public ExpenseAdapter(Context context, List<ExpenseModel> expenses) {
+    String from;
+    public ExpenseAdapter(Context context, List<ExpenseModel> expenses, String from) {
         this.context = context;
+        this.from = from;
         this.expenses = expenses;
     }
 
@@ -92,6 +94,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.Holder> 
                     doDelete(expenses.get(getAdapterPosition()).getNumber());
                 });
 
+                dialog.show();
             });
             edit.setOnClickListener(v -> {
                 if (type.isEnabled()){
@@ -117,8 +120,15 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.Holder> 
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.loading);
             dialog.show();
+            String action = "";
+            if (from.equalsIgnoreCase("daily")){
+                action = "deleteExpense&num=" + number;
+            }
+            else {
+                action = "deleteMonthlyExpense&num=" + number;
+            }
             StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(context) +
-                    "?action=deleteExpense&num=" + number,
+                    "?action=" + action,
                     response -> {
                         if (response.startsWith("<")){
                             dialog.dismiss();
@@ -153,11 +163,15 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.Holder> 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.loading);
         dialog.show();
-        System.out.println(number);
-        System.out.println(reason);
-        System.out.println(amount);
+        String action = "";
+        if (from.equalsIgnoreCase("daily")){
+            action = "updateDailyEx";
+        }
+        else {
+            action = "updateMonthlyEx";
+        }
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(context) +
-                "?action=updateDailyEx" +
+                "?action=" + action +
                 "&num=" + number +
                 "&name=" + reason +
                 "&amount=" + amount,

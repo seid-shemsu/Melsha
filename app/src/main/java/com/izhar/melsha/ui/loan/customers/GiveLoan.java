@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -36,7 +37,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,6 +55,7 @@ public class GiveLoan extends AppCompatActivity {
     ArrayAdapter<CharSequence> stores;
     AutoCompleteTextView store;
     Dialog dialog;
+    CardView branch_card;
     String branch;
     @Override
     public boolean onSupportNavigateUp() {
@@ -67,6 +71,11 @@ public class GiveLoan extends AppCompatActivity {
         setContentView(R.layout.form_loan_take);
         setTitle("Give Credit");
         branch = getSharedPreferences("user", MODE_PRIVATE).getString("branch", "Guest");
+        branch_card = findViewById(R.id.branch_card);
+
+        if (branch.equalsIgnoreCase("owner"))
+            branch_card.setVisibility(View.VISIBLE);
+
         dialog = new Dialog(this);
         dialog.setCancelable(false);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -88,11 +97,13 @@ public class GiveLoan extends AppCompatActivity {
         linear = findViewById(R.id.linear);
         fab = findViewById(R.id.fab);
         submit = findViewById(R.id.submit);
+
         fab.setOnClickListener(v -> {
             View item = getLayoutInflater().inflate(R.layout.single_take_loan, null, false);
             ProgressBar progress = item.findViewById(R.id.progress);
-            EditText code = item.findViewById(R.id.code);
             ImageView check = item.findViewById(R.id.check);
+            EditText code = item.findViewById(R.id.code);
+            EditText quantity = item.findViewById(R.id.quantity);
             check.setOnClickListener(v1 -> {
                 if (check.getDrawable().getConstantState() == getResources().getDrawable( R.drawable.check).getConstantState()){
                     items.remove(code.getText().toString());
@@ -101,7 +112,7 @@ public class GiveLoan extends AppCompatActivity {
                 }
                 else {
                     code.setEnabled(false);
-                    addItems(code.getText().toString(), check, code, progress);
+                    addItems(code.getText().toString(), quantity, check, code, progress);
                 }
             });
             linear.addView(item);
@@ -111,33 +122,39 @@ public class GiveLoan extends AppCompatActivity {
             if (isValid()) {
                 if (isValid2()) {
                     if (isValid3()) {
-                        try {
-                            JSONArray array = new JSONArray();
-                            for (int i = 0; i < linear.getChildCount(); i++) {
-                                View view = linear.getChildAt(i);
-                                EditText code, amount, quantity;
-                                code = view.findViewById(R.id.code);
-                                amount = view.findViewById(R.id.amount);
-                                quantity = view.findViewById(R.id.quantity);
+                        if (isValid4()) {
+                            try {
+                                JSONArray array = new JSONArray();
+                                for (int i = 0; i < linear.getChildCount(); i++) {
+                                    View view = linear.getChildAt(i);
+                                    EditText code, amount, quantity;
+                                    code = view.findViewById(R.id.code);
+                                    amount = view.findViewById(R.id.amount);
+                                    quantity = view.findViewById(R.id.quantity);
 
-                                String co = code.getText().toString();
-                                String am = amount.getText().toString();
-                                String qua = quantity.getText().toString();
-                                String st = branch;
-                                JSONObject item = new JSONObject();
-                                item.put("code", co);
-                                item.put("quantity", Integer.parseInt(qua));
-                                item.put("pr_price", am);
-                                item.put("pr_branch", st);
-                                array.put(item);
+                                    String co = code.getText().toString();
+                                    String am = amount.getText().toString();
+                                    String qua = quantity.getText().toString();
+                                    String st;
+                                    if (branch.equalsIgnoreCase("owner"))
+                                        st = branch;
+                                    else
+                                        st = getStore();
+                                    JSONObject item = new JSONObject();
+                                    item.put("code", co);
+                                    item.put("quantity", Integer.parseInt(qua));
+                                    item.put("pr_price", am);
+                                    item.put("pr_branch", st);
+                                    array.put(item);
+                                }
+                                getSold();
+                                giveLoan(person_code.getText().toString(),
+                                        person_name.getText().toString(),
+                                        person_phone.getText().toString(),
+                                        amount.getText().toString(), quantity.getText().toString(), array.toString(), jSold.toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            getSold();
-                            giveLoan(person_code.getText().toString(),
-                                    person_name.getText().toString(),
-                                    person_phone.getText().toString(),
-                                    amount.getText().toString(), quantity.getText().toString(), array.toString(), jSold.toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
                     }
                 }
@@ -154,6 +171,11 @@ public class GiveLoan extends AppCompatActivity {
             quantity = view.findViewById(R.id.quantity);
             SoldModel soldModel = new SoldModel();
             soldModel.setFrom_store(branch);
+            if (branch.equalsIgnoreCase("owner"))
+                soldModel.setFrom_store(getStore());
+//                purchasedModel.setStore(store.getText().toString());
+            else
+                soldModel.setFrom_store(branch);
             soldModel.setSold_price(Integer.parseInt(amount.getText().toString()));
             soldModel.setQuantity(Integer.parseInt(quantity.getText().toString()));
             soldModelMap.put(code.getText().toString(), soldModel);
@@ -179,7 +201,7 @@ public class GiveLoan extends AppCompatActivity {
         }
     }
 
-    private void addItems(String co, ImageView icon, EditText code, ProgressBar progress) {
+    private void addItems(String co, EditText quantity, ImageView icon, EditText code, ProgressBar progress) {
         progress.setVisibility(View.VISIBLE);
         icon.setVisibility(View.GONE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(this) +
@@ -257,7 +279,6 @@ public class GiveLoan extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-
     private boolean isValid() {
         if (person_name.getText().toString().isEmpty()) {
             Toast.makeText(this, "specify persons' name", Toast.LENGTH_SHORT).show();
@@ -282,6 +303,10 @@ public class GiveLoan extends AppCompatActivity {
         }
         if (items.size() == 0) {
             Toast.makeText(this, "add some item", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (branch.equalsIgnoreCase("owner") && store.getText().toString().length() <= 0){
+            Toast.makeText(this, "select branch", Toast.LENGTH_SHORT).show();
             return false;
         }
         for (int i = 0; i < linear.getChildCount(); i++) {
@@ -338,6 +363,23 @@ public class GiveLoan extends AppCompatActivity {
         return true;
     }
 
+    private boolean isValid4(){
+        int i = 0;
+        Set<String> keys = items.keySet();
+        boolean val = true;
+        for (String key : keys) {
+            View view = linear.getChildAt(i);
+            EditText quantity = view.findViewById(R.id.quantity);
+            ImageView check = view.findViewById(R.id.check);
+            if (getBranchQuantity(items.get(key), getStore()) < Integer.parseInt(quantity.getText().toString())){
+                quantity.setError("Too large");
+                check.setImageDrawable(getResources().getDrawable(R.drawable.help));
+                val = false;
+            }
+        }
+        return val;
+    }
+
     private int getBranchQuantity(ItemModel item, String st) {
 
         switch (st) {
@@ -353,9 +395,7 @@ public class GiveLoan extends AppCompatActivity {
 
     }
 
-
     Utils utils = new Utils();
-
     private void giveLoan(String code, String name, String phone, String amount, String quantity, String items, String jSold) {
         String link = utils.getUrl(this) + "?action=givingLoan" +
                 "&pcode=" + code +
@@ -398,5 +438,22 @@ public class GiveLoan extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+    }
+
+    private String getStore() {
+        if (branch.equalsIgnoreCase("owner")) {
+            switch (store.getText().toString()) {
+                case "ሱቅ 3":
+                    return "Kore";
+                case "ሱቅ 2":
+                    return "Dessie";
+                case "ሱቅ 1":
+                    return "Jemmo";
+                default:
+                    return "";
+            }
+        }
+        else
+            return branch;
     }
 }

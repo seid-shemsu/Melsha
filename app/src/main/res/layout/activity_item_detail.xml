@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:background="@drawable/bg_"
+    android:orientation="vertical"
     tools:context=".details.ItemDetail">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_above="@id/bottom"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,13 +22,13 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
-            app:boxCornerRadiusBottomEnd="10dp"
-            app:boxCornerRadiusBottomStart="10dp"
-                android:hint="Code">
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="5dp"
+                android:hint="Code"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp">
 
                 <EditText
                     android:id="@+id/code"
@@ -43,14 +43,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
-            android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
-            app:boxCornerRadiusBottomEnd="10dp"
-            app:boxCornerRadiusBottomStart="10dp"
                 android:layout_height="wrap_content"
-                android:hint="Name">
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="5dp"
+                android:hint="Name"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp">
 
                 <EditText
                     android:id="@+id/name"
@@ -61,17 +61,18 @@
                     android:singleLine="true"
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
-            android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
-            app:boxCornerRadiusBottomEnd="10dp"
-            app:boxCornerRadiusBottomStart="10dp"
                 android:layout_height="wrap_content"
-                android:hint="Type">
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="5dp"
+                android:hint="Type"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp">
 
                 <EditText
                     android:id="@+id/type"
@@ -82,17 +83,18 @@
                     android:singleLine="true"
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
-            android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
-            app:boxCornerRadiusBottomEnd="10dp"
-            app:boxCornerRadiusBottomStart="10dp"
                 android:layout_height="wrap_content"
-                android:hint="Model">
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="5dp"
+                android:hint="Model"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp">
 
                 <EditText
                     android:id="@+id/model"
@@ -103,17 +105,18 @@
                     android:singleLine="true"
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
-            android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
-            app:boxCornerRadiusBottomEnd="10dp"
-            app:boxCornerRadiusBottomStart="10dp"
                 android:layout_height="wrap_content"
-                android:hint="Size">
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="5dp"
+                android:hint="Size"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp">
 
                 <EditText
                     android:id="@+id/size"
@@ -129,13 +132,13 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
-            app:boxCornerRadiusBottomEnd="10dp"
-            app:boxCornerRadiusBottomStart="10dp"
-                android:hint="Quantity">
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="5dp"
+                android:hint="Quantity"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp">
 
                 <EditText
                     android:id="@+id/quantity"
@@ -151,13 +154,13 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
-            app:boxCornerRadiusBottomEnd="10dp"
-            app:boxCornerRadiusBottomStart="10dp"
-                android:hint="Avg. Price">
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="5dp"
+                android:hint="Avg. Price"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp">
 
                 <EditText
                     android:id="@+id/avg_price"
@@ -173,13 +176,13 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
-            app:boxCornerRadiusBottomEnd="10dp"
-            app:boxCornerRadiusBottomStart="10dp"
-                android:hint="Total Capital">
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="5dp"
+                android:hint="Total Capital"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp">
 
                 <EditText
                     android:id="@+id/total_capital"
@@ -195,13 +198,13 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
-            app:boxCornerRadiusBottomEnd="10dp"
-            app:boxCornerRadiusBottomStart="10dp"
-                android:hint="Dessie">
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="5dp"
+                android:hint="ሱቅ 3"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp">
 
                 <EditText
                     android:id="@+id/dessie"
@@ -216,14 +219,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
-            android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
-            app:boxCornerRadiusBottomEnd="10dp"
-            app:boxCornerRadiusBottomStart="10dp"
                 android:layout_height="wrap_content"
-                android:hint="Jemmo">
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="5dp"
+                android:hint="ሱቅ 1"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp">
 
                 <EditText
                     android:id="@+id/jemmo"
@@ -239,13 +242,13 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="10dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
-            app:boxCornerRadiusBottomEnd="10dp"
-            app:boxCornerRadiusBottomStart="10dp"
-                android:hint="Kore">
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="5dp"
+                android:hint="ሱቅ 2"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp">
 
                 <EditText
                     android:id="@+id/kore"
@@ -261,9 +264,9 @@
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bottom"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
@@ -276,9 +279,9 @@
             android:layout_weight=".33"
             android:backgroundTint="#A30404"
             android:elevation="10dp"
-            app:cornerRadius="100dp"
             android:text="Move"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            app:cornerRadius="100dp" />
 
         <Button
             android:id="@+id/sell"
@@ -286,21 +289,21 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
             android:layout_weight=".33"
-            app:cornerRadius="100dp"
             android:backgroundTint="@color/green"
             android:elevation="10dp"
             android:text="Sell"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            app:cornerRadius="100dp" />
 
         <Button
             android:id="@+id/purchase"
             android:layout_width="0dp"
-            app:cornerRadius="100dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
             android:layout_weight=".33"
             android:elevation="10dp"
             android:text="purchase"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            app:cornerRadius="100dp" />
     </LinearLayout>
 </RelativeLayout>

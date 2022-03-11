@@ -240,7 +240,7 @@ public class Expense extends Fragment {
                             expenses.add(expense);
                         }
                         refresh.setRefreshing(false);
-                        adapter = new ExpenseAdapter(getContext(), expenses);
+                        adapter = new ExpenseAdapter(getContext(), expenses, "daily");
                         recycler.setAdapter(adapter);
                         recycler.setVisibility(View.VISIBLE);
                         progress.setVisibility(View.GONE);

@@ -8,10 +8,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.izhar.melsha.ui.store.All;
-import com.izhar.melsha.ui.store.Dessie;
-import com.izhar.melsha.ui.store.Jemmo;
-import com.izhar.melsha.ui.store.Kore;
+import com.izhar.melsha.ui.sold.All;
+import com.izhar.melsha.ui.sold.Dessie;
+import com.izhar.melsha.ui.sold.Jemmo;
+import com.izhar.melsha.ui.sold.Kore;
 
 public class TabAdapter extends FragmentStatePagerAdapter {
     private final int tab_numbers;
@@ -49,13 +49,13 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "All";
+                return "ሁሉም";
             case 1:
-                return "Jemmo";
+                return "ሱቅ 1";
             case 2:
-                return "Kore";
+                return "ሱቅ 2";
             case 3:
-                return "Dessie";
+                return "ሱቅ 3";
         }
         return null;
     }

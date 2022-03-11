@@ -9,9 +9,6 @@ import com.izhar.melsha.ui.purchased.AllPurchased;
 import com.izhar.melsha.ui.purchased.DessiePurchased;
 import com.izhar.melsha.ui.purchased.JemmoPurchased;
 import com.izhar.melsha.ui.purchased.KorePurchased;
-import com.izhar.melsha.ui.store.Dessie;
-import com.izhar.melsha.ui.store.Jemmo;
-import com.izhar.melsha.ui.store.Kore;
 
 public class PurchasedTabAdapter extends FragmentStatePagerAdapter {
 
@@ -46,13 +43,13 @@ public class PurchasedTabAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "All";
+                return "ሁሉም";
             case 1:
-                return "Jemmo";
+                return "ሱቅ 1";
             case 2:
-                return "Kore";
+                return "ሱቅ 2";
             case 3:
-                return "Dessie";
+                return "ሱቅ 3";
         }
         return null;
     }

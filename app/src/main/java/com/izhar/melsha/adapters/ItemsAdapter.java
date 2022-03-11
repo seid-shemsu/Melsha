@@ -2,6 +2,7 @@ package com.izhar.melsha.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +43,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.Holder>{
         /*holder.name.setText(item.getName());
         holder.size.setText(String.valueOf(item.getSize()));
         holder.model.setText(item.getModel());*/
-        holder.dessie.setText("Dessie: " + item.getDessie());
-        holder.kore.setText("Kore: " + item.getKore());
-        holder.jemmo.setText("Jemmo: " + item.getJemmo());
+        String d = "<b>" + item.getDessie() + "</b>";
+        String k = "<b>" + item.getKore() + "</b>";
+        String j = "<b>" + item.getJemmo() + "</b>";
+        holder.dessie.setText("ሱቅ 3\n" + Html.fromHtml(d));
+        holder.kore.setText("ሱቅ 2\n" + Html.fromHtml(k));
+        holder.jemmo.setText("ሱቅ 1\n " + Html.fromHtml(j));
         holder.model.setText(item.getModel());
 
     }

@@ -141,17 +141,16 @@ public class BankFragment extends Fragment {
                     Toast.makeText(getContext(), "enter valid data", Toast.LENGTH_SHORT).show();
             });
         });
-        String branch;
         branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
         if (branch.equalsIgnoreCase("owner")) {
-            getBanks();
             fab.setVisibility(View.VISIBLE);
         }
         else
             progress.setVisibility(View.GONE);
+        getBanks();
         return root;
     }
-
+    String branch;
     void newBank(BankModel bank, BottomSheetDialog dialog) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
                 "?action=newBankAcc" +
@@ -179,7 +178,8 @@ public class BankFragment extends Fragment {
         recycler.setVisibility(View.GONE);
         progress.setVisibility(View.VISIBLE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
-                "?action=getBankList",
+                "?action=getBankList" +
+                "&branch=" + branch,
                 response -> {
                     try {
                         if (!response.startsWith("<")) {

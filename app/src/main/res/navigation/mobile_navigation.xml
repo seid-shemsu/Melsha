@@ -11,7 +11,7 @@
         tools:layout="@layout/fragment_home"/>
     <fragment
         android:id="@+id/store"
-        android:name="com.izhar.melsha.ui.store.StoreFragment"
+        android:name="com.izhar.melsha.ui.sold.SoldFragment"
         android:label="Sold"
         tools:layout="@layout/fragment_store"/>
     <fragment
@@ -43,6 +43,11 @@
         android:id="@+id/expense"
         android:name="com.izhar.melsha.ui.expense.Expense"
         android:label="Expense"
+        tools:layout="@layout/fragment_expense"/>
+    <fragment
+        android:id="@+id/m_expense"
+        android:name="com.izhar.melsha.ui.m_expense.MExpense"
+        android:label="Monthly Expense"
         tools:layout="@layout/fragment_expense"/>
     <fragment
         android:id="@+id/bank"

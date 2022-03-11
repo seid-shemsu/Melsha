@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/bg_"
-    tools:context=".ui.store.Dessie">
+    tools:context=".ui.sold.Dessie">
 
     <LinearLayout
         android:layout_width="match_parent"

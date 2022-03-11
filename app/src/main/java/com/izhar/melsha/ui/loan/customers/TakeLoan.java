@@ -136,7 +136,7 @@ public class TakeLoan extends AppCompatActivity {
                                 if (branch.equalsIgnoreCase("owner"))
                                      st = branch;
                                 else
-                                    st = store.getText().toString();
+                                    st = getStore();
                                 JSONObject item = new JSONObject();
                                 item.put("code", co);
                                 item.put("quantity", Integer.parseInt(qua));
@@ -167,7 +167,8 @@ public class TakeLoan extends AppCompatActivity {
             quantity = view.findViewById(R.id.quantity);
             PurchasedModel purchasedModel = new PurchasedModel();
             if (branch.equalsIgnoreCase("owner"))
-                purchasedModel.setStore(store.getText().toString());
+                purchasedModel.setStore(getStore());
+//                purchasedModel.setStore(store.getText().toString());
             else
                 purchasedModel.setStore(branch);
             purchasedModel.setPurchased_price(Integer.parseInt(amount.getText().toString()));
@@ -370,7 +371,6 @@ public class TakeLoan extends AppCompatActivity {
 
     }
 
-
     Utils utils = new Utils();
 
     private void takeLoan(String code, String name, String phone, String amount, String quantity, String items, String jPurchased) {
@@ -414,5 +414,22 @@ public class TakeLoan extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+    }
+
+    private String getStore() {
+        if (branch.equalsIgnoreCase("owner")) {
+            switch (store.getText().toString()) {
+                case "ሱቅ 3":
+                    return "Kore";
+                case "ሱቅ 2":
+                    return "Dessie";
+                case "ሱቅ 1":
+                    return "Jemmo";
+                default:
+                    return "";
+            }
+        }
+        else
+            return branch;
     }
 }

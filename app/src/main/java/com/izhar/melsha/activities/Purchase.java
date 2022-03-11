@@ -106,13 +106,13 @@ public class Purchase extends AppCompatActivity {
     }
 
     private int getBranchQuantity(){
-        String b = branch.equalsIgnoreCase("owner") ? store.getText().toString() : branch;
+        String b = branch.equalsIgnoreCase("owner") ? getToStore() : branch;
         switch (b){
-            case "Dessie":
+            case "ሱቅ 3":
                 return item.getDessie();
-            case "Kore":
+            case "ሱቅ 2":
                 return item.getKore();
-            case "Jemmo":
+            case "ሱቅ 1":
                 return item.getJemmo();
             default:
                 return 0;
@@ -121,6 +121,7 @@ public class Purchase extends AppCompatActivity {
 
     Utils utils = new Utils();
     private void doPurchasing(){
+        System.out.println("-----------------------------------------------------------BRANCH IS -------------------------------------------------------------- " + getBranch());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(this) +
                 "?action=doPurchasing"+
                 "&code=" + item.getCode()+
@@ -159,6 +160,19 @@ public class Purchase extends AppCompatActivity {
     }
 
     private String getBranch() {
-        return branch.equalsIgnoreCase("owner") ? store.getText().toString() : branch;
+        return branch.equalsIgnoreCase("owner") ? getToStore() : branch;
     }
+    private String getToStore() {
+        switch (store.getText().toString()) {
+            case "ሱቅ 3":
+                return "Kore";
+            case "ሱቅ 2":
+                return "Dessie";
+            case "ሱቅ 1":
+                return "Jemmo";
+            default:
+                return "";
+        }
+    }
+
 }

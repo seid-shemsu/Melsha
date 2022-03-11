@@ -3,16 +3,15 @@ package com.izhar.melsha.ui.purchased;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -123,4 +122,16 @@ public class KorePurchased extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
     }
+
+    /*void getPurchased() {
+        Utils utils = new Utils();
+        purchases = utils.getPurchased(getContext(), "Kore");
+        adapter = new PurchasedAdapter(getContext(), purchases);
+        recycler.setAdapter(adapter);
+        progress.setVisibility(View.GONE);
+        if (purchases.size() == 0) {
+            no_store.setVisibility(View.VISIBLE);
+        } else
+            no_store.setVisibility(View.GONE);
+    }*/
 }

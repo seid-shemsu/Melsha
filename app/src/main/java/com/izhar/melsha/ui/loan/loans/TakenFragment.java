@@ -128,7 +128,7 @@ public class TakenFragment extends Fragment {
                 } else {
                     filteredLoans.clear();
                     for (LoanModel loan : loans) {
-                        if (loan.getPerson_code().toLowerCase().contains(search.getText().toString().toLowerCase()) || loan.getCredit_no().toLowerCase().contains(search.getText().toString().toLowerCase()))
+                        if (loan.getPerson_name().toLowerCase().contains(search.getText().toString().toLowerCase()) || loan.getCredit_no().toLowerCase().contains(search.getText().toString().toLowerCase()))
                             filteredLoans.add(loan);
                     }
                     adapter = new LoanAdapter(getContext(), filteredLoans, "loan");

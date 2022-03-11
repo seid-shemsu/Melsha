@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/bg_"
-    tools:context=".ui.sold.SoldFragment">
+    tools:context=".ui.search.SearchFragment">
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_field"
         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"

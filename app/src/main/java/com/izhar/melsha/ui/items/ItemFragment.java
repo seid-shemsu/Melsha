@@ -120,7 +120,7 @@ public class ItemFragment extends Fragment {
                     filteredItems.clear();
                     for (ItemModel item : items) {
                         if (item.getModel().toLowerCase().contains(search.getText().toString().toLowerCase()) ||
-                            item.getName().toLowerCase().contains(search.getText().toString().toLowerCase()))
+                            item.getCode().toLowerCase().contains(search.getText().toString().toLowerCase()))
                             filteredItems.add(item);
                     }
                     adapter = new ItemsAdapter(getContext(), filteredItems);

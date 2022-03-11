@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_"
     android:orientation="vertical"
-    tools:context=".ui.store.StoreFragment">
+    tools:context=".ui.sold.SoldFragment">
 
     <FrameLayout
         android:layout_width="match_parent"

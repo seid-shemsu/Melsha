@@ -152,7 +152,7 @@ public class HomeFragment extends Fragment {
                 "?action=getEthiod",
                 response -> {
                     if (response.startsWith("<")) {
-                        startActivity(new Intent((getContext()), ErrorActivity.class).putExtra("error", response));
+                        startActivity(new Intent(getActivity().getApplicationContext(), ErrorActivity.class).putExtra("error", response));
                         Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
                         System.out.println(response);
                     } else {

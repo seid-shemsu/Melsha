@@ -34,10 +34,11 @@ import java.util.List;
 public class BankAdapter extends RecyclerView.Adapter<BankAdapter.Holder> {
     Context context;
     List<BankModel> banks;
-
+    String branch;
     public BankAdapter(Context context, List<BankModel> banks) {
         this.context = context;
         this.banks = banks;
+        branch = context.getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
     }
 
     @NonNull
@@ -51,7 +52,10 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.Holder> {
         BankModel bank = banks.get(position);
         holder.name.setText(bank.getName());
         holder.account.setText(bank.getAccount());
-        holder.balance.setText("$" + bank.getBalance());
+        if(branch.equalsIgnoreCase("owner"))
+            holder.balance.setText("$" + bank.getBalance());
+        else
+            holder.balance.setText("$" + 0);
 
     }
 
@@ -143,6 +147,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.Holder> {
                     "?action=" + act +
                     "&code=" + code +
                     "&name=" + name +
+                    "&branch="+ branch +
                     "&amount=" + Integer.parseInt(amount.getText().toString()) ,
                     response -> {
                         if (response.startsWith("<")){

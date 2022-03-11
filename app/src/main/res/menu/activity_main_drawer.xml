@@ -46,6 +46,10 @@
             android:icon="@drawable/loan"
             android:title="Expense"/>
         <item
+            android:id="@+id/m_expense"
+            android:icon="@drawable/loan"
+            android:title="Monthly Expense"/>
+        <item
             android:id="@+id/bank"
             android:icon="@drawable/bank"
             android:title="Bank"/>

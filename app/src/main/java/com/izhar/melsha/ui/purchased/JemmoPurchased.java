@@ -123,4 +123,15 @@ public class JemmoPurchased extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
     }
+    /*void getPurchased() {
+        Utils utils = new Utils();
+        purchases = utils.getPurchased(getContext(), "Jemmo");
+        adapter = new PurchasedAdapter(getContext(), purchases);
+        recycler.setAdapter(adapter);
+        progress.setVisibility(View.GONE);
+        if (purchases.size() == 0) {
+            no_store.setVisibility(View.VISIBLE);
+        } else
+            no_store.setVisibility(View.GONE);
+    }*/
 }

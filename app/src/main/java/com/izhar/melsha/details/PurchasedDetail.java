@@ -58,12 +58,12 @@ public class PurchasedDetail extends AppCompatActivity {
         delete = findViewById(R.id.delete);
         quantity.setText(String.valueOf(purchased.getQuantity()));
         purchased_price.setText(String.valueOf(purchased.getPurchased_price()));
-        store.setText(String.valueOf(purchased.getStore()));
+        store.setText(getStore());
         code.setText(purchased.getCode());
         name.setText(purchased.getName());
         size.setText(String.valueOf(purchased.getSize()));
         model.setText(purchased.getModel());
-        date.setText(purchased.getDate().substring(0, purchased.getDate().indexOf('T')));
+        date.setText(purchased.getDate());
         delete.setOnClickListener(v -> {
             Dialog dialog = new Dialog(this);
             dialog.setCanceledOnTouchOutside(false);
@@ -121,6 +121,19 @@ public class PurchasedDetail extends AppCompatActivity {
             });
 
         });
+    }
+
+    private String getStore() {
+        switch ((purchased.getStore())){
+            case "Jemmo":
+                return "ሱቅ 1";
+            case "Kore":
+                return "ሱቅ 3";
+            case "Dessie":
+                return "ሱቅ 2";
+            default:
+                return "";
+        }
     }
 
     private void deletePurchased(String id) {

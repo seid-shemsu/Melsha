@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Melsha</string>
+    <string name="app_name">BGram</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="stores">
-        <item>Dessie</item>
-        <item>Jemmo</item>
-        <item>Kore</item>
+        <item>ሱቅ 3</item>
+        <item>ሱቅ 1</item>
+        <item>ሱቅ 2</item>
     </string-array>
     <string-array name="type">
         <item>Deposit</item>

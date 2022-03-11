@@ -610,7 +610,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginHorizontal="10dp"
-                                android:text="ጀሞ"
+                                android:text="ሱቅ 1"
                                 android:textColor="@color/purple_700" />
                         </LinearLayout>
 
@@ -702,7 +702,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginHorizontal="10dp"
-                                android:text="ቆሬ"
+                                android:text="ሱቅ 2"
                                 android:textColor="@color/purple_700" />
                         </LinearLayout>
 
@@ -794,7 +794,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginHorizontal="10dp"
-                                android:text="ደሴ"
+                                android:text="ሱቅ 3"
                                 android:textColor="@color/purple_700" />
                         </LinearLayout>
 

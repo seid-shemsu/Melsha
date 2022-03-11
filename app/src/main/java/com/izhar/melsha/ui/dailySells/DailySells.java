@@ -33,7 +33,6 @@ public class DailySells extends Fragment {
     TextInputLayout amount_input;
     Button save;
     String user_branch;
-
     Utils utils = new Utils();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_height="match_parent"
     android:background="@drawable/bg_"
-    tools:context=".ui.store.All">
+    tools:context=".ui.sold.All">
 
     <LinearLayout
         android:layout_width="match_parent"

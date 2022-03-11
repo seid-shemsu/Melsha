@@ -1,4 +1,4 @@
-package com.izhar.melsha.ui.store;
+package com.izhar.melsha.ui.sold;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -39,8 +39,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Kore extends Fragment {
-    public Kore() {
+public class Dessie extends Fragment {
+    public Dessie() {
     }
 
     View root;
@@ -51,12 +51,11 @@ public class Kore extends Fragment {
     private ProgressBar progress;
     private TextView total_sell, total_profit;
     private int tot_sel=0, tot_profit=0;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //setHasOptionsMenu(true);
-        root = inflater.inflate(R.layout.fragment_kore, container, false);
+        root = inflater.inflate(R.layout.fragment_dessie, container, false);
         total_profit = root.findViewById(R.id.total_profit);
         total_sell = root.findViewById(R.id.total_sell);
         recycler = root.findViewById(R.id.recycler);
@@ -66,7 +65,7 @@ public class Kore extends Fragment {
         progress = root.findViewById(R.id.progress);
         String branch;
         branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
-        if (branch.equalsIgnoreCase("Kore") || branch.equalsIgnoreCase("owner"))
+        if (branch.equalsIgnoreCase("Dessie") || branch.equalsIgnoreCase("owner"))
             getItems();
         else {
             progress.setVisibility(View.GONE);
@@ -77,10 +76,9 @@ public class Kore extends Fragment {
     }
 
     void getItems() {
-
         Utils utils = new Utils();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
-                "?action=getBranchItemSold&branch=Kore",
+                "?action=getBranchItemSold&branch=Dessie",
                 response -> {
                     try {
                         solds.clear();
@@ -114,14 +112,14 @@ public class Kore extends Fragment {
                                 sold.setSold_price(0);
                             } else {
                                 sold.setSold_price(object.getInt("sell_price"));
-                                tot_sel+=object.getInt("sell_price");
+                                tot_sel+=object.getInt("sell_price") * object.getInt("quantity");
                             }
                             if (object.get("profit").toString().equalsIgnoreCase("") || object.get("profit").toString().startsWith("#")) {
                                 sold.setProfit(0);
 
                             } else {
                                 sold.setProfit(object.getInt("profit"));
-                                tot_profit += object.getInt("profit") * object.getInt("quantity");
+                                tot_profit += object.getInt("profit");
                             }
                             solds.add(0, sold);
                         }
@@ -130,9 +128,9 @@ public class Kore extends Fragment {
                         adapter = new SoldAdapter(getContext(), solds);
                         recycler.setAdapter(adapter);
                         progress.setVisibility(View.GONE);
+
                         if (solds.size() == 0)
                             no_store.setVisibility(View.VISIBLE);
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -140,7 +138,7 @@ public class Kore extends Fragment {
                 }, error -> {
             error.printStackTrace();
             try {
-                Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_LONG)
                         .setAction("Retry", v -> getItems())
                         .show();
             } catch (Exception e) {
@@ -217,7 +215,7 @@ public class Kore extends Fragment {
                 }, error -> {
             error.printStackTrace();
             try {
-                Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_LONG)
                         .setAction("Retry", v -> getItems())
                         .show();
             } catch (Exception e) {

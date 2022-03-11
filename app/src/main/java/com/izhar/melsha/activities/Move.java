@@ -70,7 +70,7 @@ public class Move extends AppCompatActivity {
                 "&model=" + item.getModel()+
                 "&quantity=" + item.getQuantity()+
                 "&avg_price=" + item.getAvg_price()+
-                "&branchTo=" + to_store.getText().toString()+
+                "&branchTo=" + getToStore()+
                 "&branch=" + branch+
                 "&sell_quantity=" + Integer.parseInt(quantity.getText().toString())+
                 "&branch_quantity=" + getBranchQuantity(),
@@ -93,6 +93,19 @@ public class Move extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
 
+    }
+
+    private String getToStore() {
+        switch (from_store.getText().toString()) {
+            case "ሱቅ 3":
+                return "Kore";
+            case "ሱቅ 2":
+                return "Dessie";
+            case "ሱቅ 1":
+                return "Jemmo";
+            default:
+                return "";
+        }
     }
 
     private boolean valid() {
@@ -140,11 +153,11 @@ public class Move extends AppCompatActivity {
 
     private int getBranchQuantity() {
         switch (from_store.getText().toString()) {
-            case "Dessie":
+            case "ሱቅ 3":
                 return item.getDessie();
-            case "Kore":
+            case "ሱቅ 2":
                 return item.getKore();
-            case "Jemmo":
+            case "ሱቅ 1":
                 return item.getJemmo();
             default:
                 return 0;

@@ -1,4 +1,4 @@
-package com.izhar.melsha.ui.store;
+package com.izhar.melsha.ui.sold;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -112,14 +112,14 @@ public class All extends Fragment {
                                 sold.setSold_price(0);
                             } else {
                                 sold.setSold_price(object.getInt("sell_price"));
-                                tot_sel+=object.getInt("sell_price");
+                                tot_sel+=object.getInt("sell_price") * object.getInt("quantity");
                             }
                             if (object.get("profit").toString().equalsIgnoreCase("") || object.get("profit").toString().startsWith("#")) {
                                 sold.setProfit(0);
 
                             } else {
                                 sold.setProfit(object.getInt("profit"));
-                                tot_profit += object.getInt("profit") * object.getInt("quantity");
+                                tot_profit += object.getInt("profit");
                             }
                             solds.add(0, sold);
                         }

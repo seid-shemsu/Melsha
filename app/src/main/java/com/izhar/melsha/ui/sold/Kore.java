@@ -1,4 +1,4 @@
-package com.izhar.melsha.ui.store;
+package com.izhar.melsha.ui.sold;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -39,8 +39,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Jemmo extends Fragment {
-    public Jemmo() {
+public class Kore extends Fragment {
+    public Kore() {
     }
 
     View root;
@@ -50,13 +50,13 @@ public class Jemmo extends Fragment {
     private SoldAdapter adapter;
     private ProgressBar progress;
     private TextView total_sell, total_profit;
-    private int tot_sel=0, tot_profit=0;
+    private int tot_sel = 0, tot_profit = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //setHasOptionsMenu(true);
-        root = inflater.inflate(R.layout.fragment_jemmo, container, false);
+        root = inflater.inflate(R.layout.fragment_kore, container, false);
         total_profit = root.findViewById(R.id.total_profit);
         total_sell = root.findViewById(R.id.total_sell);
         recycler = root.findViewById(R.id.recycler);
@@ -66,9 +66,8 @@ public class Jemmo extends Fragment {
         progress = root.findViewById(R.id.progress);
         String branch;
         branch = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("branch", "Guest");
-        if (branch.equalsIgnoreCase("Jemmo") || branch.equalsIgnoreCase("owner"))
+        if (branch.equalsIgnoreCase("Kore") || branch.equalsIgnoreCase("owner"))
             getItems();
-
         else {
             progress.setVisibility(View.GONE);
             no_store.setVisibility(View.VISIBLE);
@@ -80,7 +79,7 @@ public class Jemmo extends Fragment {
     void getItems() {
         Utils utils = new Utils();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, utils.getUrl(getContext()) +
-                "?action=getBranchItemSold&branch=Jemmo",
+                "?action=getBranchItemSold&branch=Kore",
                 response -> {
                     try {
                         solds.clear();
@@ -114,42 +113,60 @@ public class Jemmo extends Fragment {
                                 sold.setSold_price(0);
                             } else {
                                 sold.setSold_price(object.getInt("sell_price"));
-                                tot_sel+=object.getInt("sell_price");
+                                tot_sel+=object.getInt("sell_price") * object.getInt("quantity");
                             }
                             if (object.get("profit").toString().equalsIgnoreCase("") || object.get("profit").toString().startsWith("#")) {
                                 sold.setProfit(0);
 
                             } else {
                                 sold.setProfit(object.getInt("profit"));
-                                tot_profit += object.getInt("profit") * object.getInt("quantity");
+                                tot_profit += object.getInt("profit");
                             }
-                            solds.add(sold);
+                            solds.add(0, sold);
                         }
                         total_sell.setText("$ " + tot_sel);
                         total_profit.setText("$ " + tot_profit);
                         adapter = new SoldAdapter(getContext(), solds);
                         recycler.setAdapter(adapter);
                         progress.setVisibility(View.GONE);
-
                         if (solds.size() == 0)
                             no_store.setVisibility(View.VISIBLE);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                 }, error -> {
-            System.out.println(error.getMessage());
+            error.printStackTrace();
             try {
-                Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_LONG)
+                Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_INDEFINITE)
                         .setAction("Retry", v -> getItems())
                         .show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
+
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
     }
+
+    /*void getItems() {
+        Utils utils = new Utils();
+        solds = utils.getSold(getContext(), "Kore");
+
+        for (SoldModel soldModel : solds) {
+            tot_sel += soldModel.getSold_price() * soldModel.getQuantity();
+            tot_profit = soldModel.getProfit();
+        }
+        total_sell.setText("$ " + tot_sel);
+        total_profit.setText("$ " + tot_profit);
+        adapter = new SoldAdapter(getContext(), solds);
+        recycler.setAdapter(adapter);
+        progress.setVisibility(View.GONE);
+        if (solds.size() == 0)
+            no_store.setVisibility(View.VISIBLE);
+    }*/
 
     void getItemsByDate(String date) {
         Utils utils = new Utils();
@@ -189,7 +206,7 @@ public class Jemmo extends Fragment {
                                 sold.setSold_price(0);
                             } else {
                                 sold.setSold_price(object.getInt("sell_price"));
-                                tot_sel+=object.getInt("sell_price");
+                                tot_sel += object.getInt("sell_price");
                             }
                             if (object.get("profit").toString().equalsIgnoreCase("") || object.get("profit").toString().startsWith("#")) {
                                 sold.setProfit(0);
@@ -198,7 +215,7 @@ public class Jemmo extends Fragment {
                                 sold.setProfit(object.getInt("profit"));
                                 tot_profit += object.getInt("profit") * object.getInt("quantity");
                             }
-                            solds.add(0, sold);
+                            solds.add(sold);
                         }
                         total_sell.setText("$ " + tot_sel);
                         total_profit.setText("$ " + tot_profit);
@@ -209,14 +226,14 @@ public class Jemmo extends Fragment {
                         if (solds.size() == 0)
                             no_store.setVisibility(View.VISIBLE);
                     } catch (JSONException e) {
-                        e.printStackTrace();
                         startActivity(new Intent(getContext(), ErrorActivity.class).putExtra("error", e.toString()));
+                        e.printStackTrace();
                     }
 
                 }, error -> {
             error.printStackTrace();
             try {
-                Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_LONG)
+                Snackbar.make(root, "Unable to load the data.", Snackbar.LENGTH_INDEFINITE)
                         .setAction("Retry", v -> getItems())
                         .show();
             } catch (Exception e) {
@@ -227,27 +244,28 @@ public class Jemmo extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
     }
-
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
+
     String today = "";
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        if (item.getItemId() == R.id.date){
+        if (item.getItemId() == R.id.date) {
             final Dialog dialog = new Dialog(getContext());
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.date_picker);
             final DatePicker datePicker = dialog.findViewById(R.id.date_picker);
             dialog.findViewById(R.id.ok).setOnClickListener(v -> {
                 String day = datePicker.getDayOfMonth() + "";
-                String month = datePicker.getMonth()+1 + "";
-                if (day.length() == 1 )
+                String month = datePicker.getMonth() + 1 + "";
+                if (day.length() == 1)
                     day = "0" + day;
-                if (month.length() == 1 )
+                if (month.length() == 1)
                     month = "0" + month;
                 today = day + "-" + month + "-" + datePicker.getYear();
                 Toast.makeText(getContext(), today, Toast.LENGTH_SHORT).show();
